@@ -1,0 +1,15 @@
+@startuml
+title business process - cdr rating
+start
+
+:selectCDRs;
+fork
+  :getCDRs;
+fork again
+  :minusUsagesAmount;
+end fork
+:deleteCDRs;
+:dispatchCRDs;
+
+stop
+@enduml

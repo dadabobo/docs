@@ -1,0 +1,46 @@
+@startuml
+title Class
+
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+class MyApp {
+  name
+  date
+  run()
+  startup()
+}
+
+class Product {
+
+}
+
+class House {
+
+}
+
+Product <|-- House
+Product <|-- Park
+Product <|-- Area
+
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+  Object[] elementData
+  size()
+}
+
+enum TimeUnit {
+  DAYS
+  HOURS
+  MINUTES
+}
+@enduml
