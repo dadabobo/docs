@@ -100,6 +100,7 @@ Multiple networks can be defined by having multiple `config.vm.network` calls wi
 
 
 #### Vagrant plugin
+* [ Available Vagrant Plugins](https://github.com/hashicorp/vagrant/wiki/Available-Vagrant-Plugins)
 * `vagrant-share` Vagrant系统的共享，支持HTTP sharing/SSH sharing / General sharing
 * `vagrant-vbguest` 支持 vboxfs类型的共享目录
 * `vagrant-hostmanager` 自动更新绑定IP的配置文件

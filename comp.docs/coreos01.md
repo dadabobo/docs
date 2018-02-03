@@ -95,24 +95,22 @@ CoreOS 的安装方法和传统 Linux 系统有很大的不同。鉴于是基础
 
 这里我们需要做的只是将其中 discovery所在行前面的注释符合“`#`”去掉，然后替换它的值为我们刚刚获得的集群标识 URL 地址。简单来说，所有使用了同一个标识 URL 的主机实例都会在 CoreOS 启动时自动加入到同一个集群中，这就实现了无需人工干预的集群服务器自发现。
 
-```bash
+```yaml
 #cloud-config
 coreos:
-etcd:
-# generate a new token for each unique cluster from
-https://discovery.etcd.io/new
-# WARNING: replace each time you 'vagrant destroy'
-
-discovery: <集群标识URL地址>
-addr: $public_ipv4:4001
-peer-addr: $public_ipv4:7001
-... ...
+  etcd:
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new
+    # WARNING: replace each time you 'vagrant destroy'
+    discovery: <集群标识URL地址>
+    addr: $public_ipv4:4001
+    peer-addr: $public_ipv4:7001
+    # ... ...
 ```
 
 然后修改 `config.rb` 文件，这里包含了 Vagrant 虚拟机的配置。通过这个文件实际上可以覆写任何 `Vagrantfile` 里的参数，但是目前我们只需要关注 `$num_instances` 和 `$update_channel` 这两个参数的值。
 * `$num_instances` 表示将启动的 CoreOS 集群中需要包含主机实例的数量；
 * `$update_channel` 表示启动的 CoreOS 实例使用的升级通道，可以是 ‘`stable`’，’`beta`’ 或 ‘`alpha`’。
-```
+```ruby
 $num_instances=3
 $update_channel='stable'
 ```
