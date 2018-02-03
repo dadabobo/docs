@@ -2,6 +2,9 @@
 Kubernetes cluster (for testing purposes) made easy with Vagrant and CoreOS.
 参考 [pires/kubernetes-vagrant-coreos-cluster](https://github.com/pires/kubernetes-vagrant-coreos-cluster).
 
+
+
+---
 ##### tips
 
 ##### 下载慢
