@@ -209,6 +209,59 @@ openssl x509 -outform der -in remote.pem -out remote.cer
 ```
 
 ----
+### Tips
+###### Tips：policy
+注意 openssl config 文件的 `[ca] policy` 配置。 
+一般而言，CA 证书采用相当严格策略，服务器证书采用宽松策略。
+
+```ini
+[ ca ]
+policy            = policy_strict
+[ policy_strict ]
+# The root CA should only sign intermediate certificates that match.
+# See the POLICY FORMAT section of `man ca`.
+countryName             = match
+stateOrProvinceName     = match
+organizationName        = match
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ policy_loose ]
+# Allow the intermediate CA to sign a more diverse range of certificates.
+# See the POLICY FORMAT section of the `ca` man page.
+countryName             = optional
+stateOrProvinceName     = optional
+localityName            = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+```
+
+###### Tips: SAN Certificates - Subject Alternative Name 
+生成带有SAN(Subject Alt Name)的自签名证书
+`openssl.cnf`
+```conf
+req_extensions = v3_req 
+```
+
+```bash
+openssl genrsa -out certs/go2zs.key 2048
+
+openssl req -new -sha256 -key certs/go2zs.key -subj "/O=go2zs/CN=go2zs.com" -out certs/go2zs.csr \
+    -reqexts SAN \
+    -config <(cat openssl.cnf \
+        <(printf "[SAN]\nsubjectAltName=DNS:*.go2zs.com,DNS:*.*go2zs.net,DNS:*.*go2zs.cn,DNS:*.*go2zs.io"))
+
+openssl ca -days 375 -in certs/go2zs.csr -out certs/go2zs.crt \
+    -extensions SAN \
+    -config <(cat imCA.cnf \
+        <(printf "[SAN]\nsubjectAltName=DNS:*.go2zs.com,DNS:*.*go2zs.net,DNS:*.*go2zs.cn,DNS:*.*go2zs.io"))
+```
+
+
+----
 <span id="openssl_create-root-ca"></span>
 ### Create root CA with OpenSSL
 OpenSSL建立根CA步骤：
