@@ -62,9 +62,10 @@ openssl ca -config imCA.cnf -extensions server_cert -days 375 -notext -md sha256
 ###### host: registry.me
 运行 docker registry
 ```bash
-docker run -d -p 5000:5000 --restart=always --name registry \
+docker run -d -p 443:443 --restart=always --name registry \
   -v /docker/certs:/certs \
   -v /docker/voldata/registry:/data \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \  
   -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data \
   -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.me.crt \
   -e REGISTRY_HTTP_TLS_KEY=/certs/registry.me.key \
@@ -75,13 +76,15 @@ docker run -d -p 5000:5000 --restart=always --name registry \
 # file: docker-registry.yml
 registry:
   image: registry:2
+  container_name: me-registry
   ports:
-    - "5000:5000"
+    - "443:443"
   volumes:
-    - /docker/certs:/certs
-    - /docker/voldata/registry:/data
+    - /data/docker/certs:/certs
+    - /data/docker/voldata/registry:/data
   restart: always
   environment:
+    - REGISTRY_HTTP_ADDR=0.0.0.0:443
     - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
     - REGISTRY_HTTP_TLS_KEY=/certs/registry.me.key
     - REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.me.crt
@@ -89,11 +92,11 @@ registry:
 
 访问 Docker Registry
 ```bash
-docker tag busybox:latest registry.me:5000/wangwg/busybox:latest
-docker push registry.me:5000/wangwg/busybox
-curl https://registry.me:5000/v2/_catalog
+docker tag busybox:latest registry.me/wangwg/busybox:latest
+docker push registry.me/wangwg/busybox
+curl https://registry.me/v2/_catalog
 ```
-在主机01/02上正常导入证书，则对应主机 `docker pull/push registry.me:5000/xx` 可以正常使用。  
+在主机01/02上正常导入证书，则对应主机 `docker pull/push registry.me/xx` 可以正常使用。  
 如未导入证书，对应主机报证书错：x509: certificate signed by unknown authority。  
 
 ###### htpasswd
@@ -106,8 +109,9 @@ docker run --rm --entrypoint htpasswd registry:2 -Bbn testu test123 > auth/htpas
 
 启动registry
 ```bash
-docker run -d -p 5000:5000 --restart=always --name registry \
+docker run -d -p 443:443 --restart=always --name registry \
   -v /docker/config/auth:/auth \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \  
   -e "REGISTRY_AUTH=htpasswd" \
   -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
   -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
@@ -123,15 +127,17 @@ docker run -d -p 5000:5000 --restart=always --name registry \
 # file: docker-registryauth.yml
 registry:
   image: registry:2
+  container_name: me-registryauth
   ports:
-    - "5000:5000"
+    - "443:443"
   volumes:
-    - /docker/certs:/certs
-    - /docker/config/auth:/auth
-    - /docker/voldata/registry:/data
+    - /data/docker/certs:/certs
+    - /data/docker/config/auth:/auth
+    - /data/docker/voldata/registry:/data
   restart: always
   environment:
     - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
+    - REGISTRY_HTTP_ADDR=0.0.0.0:443
     - REGISTRY_AUTH="htpasswd"
     - REGISTRY_AUTH_HTPASSWD_REALM="Registry Realm"
     - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
@@ -140,12 +146,12 @@ registry:
 ```
 
 ```bash
-# docker Login (username:testuser, password: testpassword)
-docker login registry.me:5000
-docker push registry.me:5000/wangwg/busybox  ## OK
+# docker Login (username:testu, password: test123)
+docker login registry.me
+docker push registry.me/wangwg/busybox  ## OK
 
 # 通过V2版Rest API可以查询Repository和images  
-curl --basic --user testu:test123 https://registry.me:5000/v2/_catalog
+curl --basic --user testu:test123 https://registry.me/v2/_catalog
 ```
 
 > htpasswd工具
