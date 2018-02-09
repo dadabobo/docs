@@ -105,6 +105,8 @@ curl https://registry.me/v2/_catalog
 # 创建用户 `testu/test123`  
 mkdir auth
 docker run --rm --entrypoint htpasswd registry:2 -Bbn testu test123 > auth/htpasswd
+# 或 (ubuntu 需要安装 bcrypt)
+htpasswd -Bbn testu test123 > auth/htpasswd
 ```
 
 启动registry
@@ -159,8 +161,8 @@ curl --basic --user testu:test123 https://registry.me/v2/_catalog
 >`htpasswd -c registry.password USERNAME`  
 
 > **tips**: nginx 与 docker registry 的 htpasswd 加密算法可能不同。
-> docker registry (TLS) 只支持 bcrypt 格式的密码
-
+> docker registry (TLS) 只支持 bcrypt 格式的密码 (`-B` 选项)
+> `htpasswd -Bbn testu test123`
 
 ###### Docker Registry + Nginx
 SSL支持，authentication (htpasswd)  (testu/test123)
