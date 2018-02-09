@@ -9,11 +9,13 @@ docker02: 192.168.99.62  #
 docker03: 192.168.99.63  # nginx.me  
 ```
 
-签发证书: CA主机, 工作目录 `/docker/certs`  
+签发证书: CA主机, 工作目录 `opensslca`  
 ```bash
 openssl genrsa -out certs/registry.me.key 2048
-openssl req -new -key certs/registry.me.key -out certs/registry.me.csr -subj "/CN=registry.me"
-openssl ca -config imCA.cnf -in certs/registry.me.csr -out certs/registry.me.crt
+openssl req -config imCA.cnf -new -sha256 \
+    -key certs/registry.me.key -out certs/registry.me.csr -subj "/CN=registry.me"
+openssl ca -config imCA.cnf -extensions server_cert -days 375 -notext -md sha256 \
+    -in certs/registry.me.csr -out certs/registry.me.crt
 ```
 
 ###### Start Registry
