@@ -4,21 +4,12 @@
 ###### Prepare
 环境说明
 ```yaml
-docker01: 192.168.99.61  # registry.me
-docker02: 192.168.99.63  # nginx.me  
-```
-
-签发证书: CA主机, 工作目录 `opensslca`  
-```bash
-openssl genrsa -out certs/registry.me.key 2048
-openssl req -config imCA.cnf -new -sha256 \
-    -key certs/registry.me.key -out certs/registry.me.csr -subj "/CN=registry.me"
-openssl ca -config imCA.cnf -extensions server_cert -days 375 -notext -md sha256 \
-    -in certs/registry.me.csr -out certs/registry.me.crt
+work  : 192.168.99.23  # registry.me
+ubuntu: 192.168.99.23  # nginx.me  
 ```
 
 ###### Start Registry
-使用官方的 docker registry 镜像来启动本地的私有仓库。(192.168.99.63) 
+使用官方的 docker registry 镜像来启动本地的私有仓库。(192.168.99.23) 
 ```bash
 # 启动registry  
 docker run -d -p 5000:5000 --name registry registry:2
@@ -34,7 +25,7 @@ docker pull localhost:5000/wangwg/firstimage
 docker stop registry && docker rm -v registry
 
 ## 指定数据卷
-docker run -d -p 5000:5000 -v /docker/voldata/registry:/var/lib/registry \
+docker run -d -p 5000:5000 -v /data/docker/voldata/registry:/var/lib/registry \
   --restart=always --name registry registry:2
 ```
 
@@ -58,6 +49,15 @@ docker pull registry.me:5000/wangwg/firstimage  ## OK
 
 ##### Secure Registry
 Docker官方是推荐你采用Secure Registry的工作模式的，即transport采用tls。这样我们就需要为Registry配置tls所需的key和crt文件了。
+
+签发证书: CA主机, 工作目录 `opensslca`  
+```bash
+openssl genrsa -out certs/registry.me.key 2048
+openssl req -config imCA.cnf -new -sha256 \
+    -key certs/registry.me.key -out certs/registry.me.csr -subj "/CN=registry.me"
+openssl ca -config imCA.cnf -extensions server_cert -days 375 -notext -md sha256 \
+    -in certs/registry.me.csr -out certs/registry.me.crt
+```
 
 ###### host: registry.me
 运行 docker registry
@@ -230,4 +230,5 @@ docker login https://nginx.me
 docker tag busybox:latest nginx.me/wangwg/firstimage
 docker push nginx.me/wangwg/firstimage
 docker pull nginx.me/wangwg/firstimage
+curl https://nginx.me/v2/_catalog
 ```
