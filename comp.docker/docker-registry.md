@@ -159,6 +159,7 @@ curl --basic --user testu:test123 https://registry.me/v2/_catalog
 >`htpasswd -c registry.password USERNAME`  
 
 > **tips**: nginx 与 docker registry 的 htpasswd 加密算法可能不同。
+> docker registry (TLS) 只支持 bcrypt 格式的密码
 
 
 ###### Docker Registry + Nginx
