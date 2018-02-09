@@ -5,8 +5,7 @@
 环境说明
 ```yaml
 docker01: 192.168.99.61  # registry.me
-docker02: 192.168.99.62  # 
-docker03: 192.168.99.63  # nginx.me  
+docker02: 192.168.99.63  # nginx.me  
 ```
 
 签发证书: CA主机, 工作目录 `opensslca`  
@@ -60,7 +59,7 @@ docker pull registry.me:5000/wangwg/firstimage  ## OK
 ##### Secure Registry
 Docker官方是推荐你采用Secure Registry的工作模式的，即transport采用tls。这样我们就需要为Registry配置tls所需的key和crt文件了。
 
-###### host: registry.supperm.com
+###### host: registry.me
 运行 docker registry
 ```bash
 docker run -d -p 5000:5000 --restart=always --name registry \
@@ -94,15 +93,15 @@ docker tag busybox:latest registry.me:5000/wangwg/busybox:latest
 docker push registry.me:5000/wangwg/busybox
 curl https://registry.me:5000/v2/_catalog
 ```
-在主机01/02/03上正常导入证书，则对应主机 `docker pull/push registry.me:5000/xx` 可以正常使用。  
+在主机01/02上正常导入证书，则对应主机 `docker pull/push registry.me:5000/xx` 可以正常使用。  
 如未导入证书，对应主机报证书错：x509: certificate signed by unknown authority。  
 
 ###### htpasswd
 使用 htpasswd 建立基于用户的认证。
 ```bash
-# 创建用户 `testuser/testpassword`  
+# 创建用户 `testu/test123`  
 mkdir auth
-docker run --rm --entrypoint htpasswd registry:2 -Bbn testuser testpassword > auth/htpasswd
+docker run --rm --entrypoint htpasswd registry:2 -Bbn testu test123 > auth/htpasswd
 ```
 
 启动registry
@@ -146,16 +145,18 @@ docker login registry.me:5000
 docker push registry.me:5000/wangwg/busybox  ## OK
 
 # 通过V2版Rest API可以查询Repository和images  
-curl --basic --user testuser:testpassword https://registry.me:5000/v2/_catalog
+curl --basic --user testu:test123 https://registry.me:5000/v2/_catalog
 ```
 
 > htpasswd工具
 >`sudo apt-get install apache2-utils` 安装 `htpasswd`  
 >`htpasswd -c registry.password USERNAME`  
 
+> **tips**: nginx 与 docker registry 的 htpasswd 加密算法可能不同。
+
 
 ###### Docker Registry + Nginx
-SSL支持，authentication (htpasswd)  (wangwg/to2passwd)
+SSL支持，authentication (htpasswd)  (testu/test123)
 `htpasswd -c registry.password USERNAME`  
 
 `docker-compose -f docker-registry-nginx.yml`
@@ -179,7 +180,7 @@ registry:
     - /docker/voldata/registry:/data
 ```
 
-配置 nginx：`nginx/conf/registry.conf` 
+配置 nginx：`nginx.conf` 
 ```yaml
 upstream docker-registry {
   server registry:5000;

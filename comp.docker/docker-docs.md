@@ -39,11 +39,13 @@
 ---
 <span id="docker_onlinedocs"></span>
 ###### Online docs
+* [Docker Compose](https://docs.docker.com/compose/overview/)
 * [docker docs](https://docs.docker.com/)
 * [docker reference](https://docs.docker.com/reference/)
 * [docker/distribution](https://github.com/docker/distribution)
 * [deploying your own registry instance](https://github.com/docker/docker.github.io/blob/master/registry/deploying.md)
 * [docker registry](https://docs.docker.com/registry/) | [github](https://hub.docker.com/_/registry/)
+* [Deploy a registry server](https://docs.docker.com/registry/deploying/)
 * [docker如何删除自建仓库中的镜像](https://github.com/burnettk/delete-docker-registry-image)
 * [在公有云上搭建负载均衡的Docker私有仓库](https://genedock.com/blog/2015/09/28/docker_private_registry/)
 * [利用阿里云 OSS 搭建私有 Docker 仓库](http://morning.work/page/2016-01/deploying-your-own-private-docker-registry.html)
@@ -53,3 +55,4 @@
 * [如何写docker-compose.yml，Docker compose file](https://deepzz.com/post/docker-compose-file.html)
 * [docker-compose-nodejs-examples ](https://github.com/b00giZm/docker-compose-nodejs-examples)
 * [example-voting-app](https://github.com/docker/example-voting-app)
+* [Docker registry - basic authentication with htpasswd](https://github.com/docker/distribution/issues/655)
