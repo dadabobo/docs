@@ -37,6 +37,58 @@ $ mv docker/* /usr/local/bin
 
 
 ---
+##### Docker Daemon
+[Docker Daemon连接方式详解](https://www.jianshu.com/p/7ba1a93e6de4) 
+[关于Ubuntu 16.04.2 LTS 下DOCKER_OPTS不生效的问题解决](http://blog.csdn.net/l6807718/article/details/51325431)
+
+@import "img/docker/docker-client-server.png" {width=600}
+
+Docker client/Server 模式包括:
+* Docker client 命令行工具 `docker`
+* Docker Daemon Server `dockerd` （早期 `docker -d`）
+* Docker Registry
+
+通常情况 Docker client 与 Docker server 通讯默认采用UNIX域套接字, 会生成一个 /var/run/docker.sock 文件, UNIX 域套接字用于本地进程之间的通讯, 这种方式相比于网络套接字效率更高, 但局限性就是只能被本地的客户端访问。
+
+服务端开启端口监听 `dockerd -H IP:PORT` , 客户端通过指定IP和端口访问服务端 `docker -H IP:PORT`
+可以同时监听多个socket: 
+`sudo dockerd -H unix:///var/run/docker.sock -H tcp://127.0.0.1:2376 -H tcp://127.0.0.1:2377`
+
+###### 创建TLS证书(根证书、服务端证书、客户端证书)
+运行 `tlscert.sh` 创建证书。
+@import "tlscert.sh"
+
+客户端的证书保存在`client`目录下, 服务端的证书保存在`server`目录下 
+
+###### 服务端配置
+`sudo cp server/* /etc/docker` 
+
+修改配置 `/etc/default/docker` (非 Ubuntu)
+`DOCKER_OPTS="--selinux-enabled --tlsverify --tlscacert=/etc/docker/ca.pem --tlscert=/etc/docker/server-cert.pem --tlskey=/etc/docker/server-key.pem -H=unix:///var/run/docker.sock -H=0.0.0.0:2375"` 
+重启docker: `sudo service docker restart`
+
+
+修改配置 `/lib/systemd/system/docker.service` (Ubuntu 16.0.4)
+修改前: `ExecStart=/usr/bin/dockerd -H fd://`
+修改后： (`-H=0.0.0.0:2375` 监听任意IP)
+`ExecStart=/usr/bin/dockerd -H fd:// --selinux-enabled --tlsverify --tlscacert=/etc/docker/ca.pem --tlscert=/etc/docker/server-cert.pem --tlskey=/etc/docker/server-key.pem -H=0.0.0.0:2375`
+重载： 
+`systemctl daemon-reload`
+`systemctl restart docker.service`
+
+###### 客户端
+客户端加`tls`参数访问 （服务端IP： `192.168.99.23`）
+`docker --tlsverify --tlscacert=client/ca.pem --tlscert=client/cert.pem --tlskey=client/key.pem -H tcp://192.168.99.23:2375 version`
+
+Docker API方式访问 
+`curl https://192.168.99.23:2375/images/json --cert client/cert.pem --key client/key.pem --cacert client/ca.pem` 
+
+简化客户端调用参数配置，追加环境变量
+`sudo cp client/* ~/.docker` 
+`echo -e "export DOCKER_HOST=tcp://192.168.99.23:2375 DOCKER_TLS_VERIFY=1" >> ~/.bashrc`
+`docker version`
+
+
 ###### Configure automated builds on Docker Hub
 在Docker Hub上配置自动构建
 * 参考 [k8s镜像：安装kubernetes](https://studygolang.com/articles/10521), 解决访问不了gcr.io问题。 
