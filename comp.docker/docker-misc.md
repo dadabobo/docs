@@ -88,6 +88,8 @@ Docker API方式访问
 `echo -e "export DOCKER_HOST=tcp://192.168.99.23:2375 DOCKER_TLS_VERIFY=1" >> ~/.bashrc`
 `docker version`
 
+> Windows 10 WSL 已配置连接到 192.168.99.23 Docker Daemon Server
+
 
 ###### Configure automated builds on Docker Hub
 在Docker Hub上配置自动构建
