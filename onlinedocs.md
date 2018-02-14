@@ -71,6 +71,7 @@
 * [Vagrant with VirtualBox on Windows10: “Rsync” could not be found on your PATH](https://stackoverflow.com/questions/34176041/vagrant-with-virtualbox-on-windows10-rsync-could-not-be-found-on-your-path)
 
 * [安装部署 CoreOS + Kubernetes 2](http://blog.csdn.net/haizhaopeng/article/details/47283183)
+* [Deploy Kubernetes: The Ultimate Guide](https://platform9.com/docs/deploy-kubernetes-the-ultimate-guide/)
 
 * [分布式发布订阅消息系统 Kafka 架构设计](http://www.oschina.net/translate/kafka-design)
 * [Kafka原理剖析](https://zhuanlan.zhihu.com/habren-kafka)
