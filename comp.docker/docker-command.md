@@ -17,44 +17,68 @@ Docker命名大致分为几类：
   update    Update configuration of one or more containers
   volume    Manage Docker volumes
   ```
-
 Docker 的命令可以采用 docker-CMD 或者 docker CMD 的方式执行。两者一致。
+
+###### 容器生命周期管理
 ```bash
+docker run          # 创建一个新容器，并在其中运行给定命令
+docker start        # 启动一个容器
+docker stop         # 终止一个运行中的容器
+docker restart      # 重启一个运行中的容器
+docker kill         # 关闭一个运行中的容器 (包括进程和所有资源)
+docker rm           # 删除给定的若干个容器
+docker pause        # 暂停一个容器中的所有进程
+docker unpause      # 将一个容器内所有的进程从暂停状态中恢复
+```
+
+###### 容器操作
+```bash
+docker ps           # 列出容器
+docker inspect      # 显示一个容器的底层具体信息。
+docker top          # 查看一个容器中的正在运行的进程信息
 docker attach       # 依附到一个正在运行的容器中。
-docker build        # 从一个 Dockerfile 创建一个镜像
+docker events       # 从服务端获取实时的事件
+docker logs         # 获取容器的 log 信息
+docker wait         # 阻塞直到一个容器终止，然后输出它的退出符
+docker export       # 导出容器内容为一个 tar 包
+docker port         # 查找一个 nat 到一个私有网口的公共口
+docker create       # 创建一个新的容器但不启动它
+docker exec         # 在运行的容器中执行命令
+```
+
+###### 容器rootfs命令
+```bash
 docker commit       # 从一个容器的修改中创建一个新的镜像
 docker cp           # 从容器中复制文件到宿主系统中
 docker diff         # 检查一个容器文件系统的修改
-docker events       # 从服务端获取实时的事件
-docker export       # 导出容器内容为一个 tar 包
-docker history      # 显示一个镜像的历史
-docker images       # 列出存在的镜像
-docker import       # 导入一个文件（典型为 tar 包）路径或目录来创建一个镜像
-docker info         # 显示一些相关的系统信息
-docker inspect      # 显示一个容器的底层具体信息。
-docker kill         # 关闭一个运行中的容器 (包括进程和所有资源)
-docker load         # 从一个 tar 包中加载一个镜像
+```
+
+###### 镜像仓库
+```bash
 docker login        # 注册或登录到一个 Docker 的仓库服务器
 docker logout       # 从 Docker 的仓库服务器登出
-docker logs         # 获取容器的 log 信息
-docker pause        # 暂停一个容器中的所有进程
-docker port         # 查找一个 nat 到一个私有网口的公共口
-docker ps           # 列出容器
-docker pull         # 从一个Docker的仓库服务器下拉一个镜像或仓库
 docker push         # 将一个镜像或者仓库推送到一个 Docker 的注册服务器
-docker restart      # 重启一个运行中的容器
-docker rm           # 删除给定的若干个容器
-docker rmi          # 删除给定的若干个镜像
-docker run          # 创建一个新容器，并在其中运行给定命令
-docker save         # 保存一个镜像为 tar 包文件
+docker pull         # 从一个Docker的仓库服务器下拉一个镜像或仓库
 docker search       # 在 Docker index 中搜索一个镜像
-docker start        # 启动一个容器
-docker stop         # 终止一个运行中的容器
+```
+
+###### 本地镜像管理
+docker` [`images`|`rmi`|`tag`|`build`|`history`|`save`|`load`|`import`]
+```bash
+docker images       # 列出存在的镜像
+docker rmi          # 删除给定的若干个镜像
 docker tag          # 为一个镜像打标签
-docker top          # 查看一个容器中的正在运行的进程信息
-docker unpause      # 将一个容器内所有的进程从暂停状态中恢复
+docker build        # 从一个 Dockerfile 创建一个镜像
+docker history      # 显示一个镜像的历史
+docker save         # 保存一个镜像为 tar 包文件
+docker load         # 从一个 tar 包中加载一个镜像
+docker import       # 导入一个文件（典型为 tar 包）路径或目录来创建一个镜像
+```
+
+###### info version
+```bash
+docker info         # 显示一些相关的系统信息
 docker version      # 输出 Docker 的版本信息
-docker wait         # 阻塞直到一个容器终止，然后输出它的退出符
 ```
 
 ###### Tips
