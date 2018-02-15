@@ -40,11 +40,10 @@ ExecStart=/usr/bin/docker run \
 * `--hostname-override string`
   If non-empty, will use this string as identification instead of the actual hostname.
 * `--cluster-domain string`
-  Domain for this cluster. If set, kubelet will configure all containers to search this domain in addition to the host's search domains  
-* `--cluster-domain string`
   Domain for this cluster. If set, kubelet will configure all containers to search this domain in addition to the host's search domains
 * `--kubeconfig string`
   Path to a kubeconfig file, specifying how to connect to the API server. (default "`/var/lib/kubelet/kubeconfig`")
+* `--register-schedulable=false`
 
 
 node
