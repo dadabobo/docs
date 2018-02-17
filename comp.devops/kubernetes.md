@@ -12,8 +12,14 @@
 @import "kubernetes-basic.md"
 
 ---
+@import "kubernetes-coroes.md"
+
+---
+@import "kubernetes-kubelet.md"
+
+---
+@import "kubernetes-kubectl.md"
+
+---
 @import "kubernetes-minikube.md"
-
-
-
 
