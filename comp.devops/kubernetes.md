@@ -9,7 +9,7 @@
 @import "kubernetes-basic.md"
 
 ---
-@import "kubernetes-coroes.md"
+@import "kubernetes-coreos.md"
 
 ---
 @import "kubernetes-kubelet.md"
@@ -19,4 +19,3 @@
 
 ---
 @import "kubernetes-minikube.md"
-

@@ -1,8 +1,11 @@
 ### Kubernetets - kubectl
-* `annotate`	
+Kubernetes 命令行工具 `kubectl`, 用它将 API server 的 API 包装成简单的命令集供我们使用.
+
+kubectl [command] [options]
+* `annotate`
   `kubectl annotate (-f FILENAME | TYPE NAME | TYPE/NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--overwrite] [--all] [--resource-version=version] [flags]`	
   Add or update the annotations of one or more resources.
-* `api-versions`
+* `api-versions` 显示API版本信息
   `kubectl api-versions [flags]`	
   List the API versions that are available.
 * `apply`	
@@ -14,40 +17,40 @@
 * `autoscale`
   `kubectl autoscale (-f FILENAME | TYPE NAME | TYPE/NAME) [--min=MINPODS] --max=MAXPODS [--cpu-percent=CPU] [flags]`	
   Automatically scale the set of pods that are managed by a replication controller.
-* `cluster-info`
+* `cluster-info` 显示集群信息
   `kubectl cluster-info [flags]`
   Display endpoint information about the master and services in the cluster.
-* `config`
+* `config` 修改集群的配置信息
   `kubectl config SUBCOMMAND [flags]`	
   Modifies kubeconfig files. See the individual subcommands for details.
-* `create`
+* `create` 通过文件名或标准输入创建一个或多个资源
   `kubectl create -f FILENAME [flags]`
   Create one or more resources from a file or stdin.
-* `delete`
+* `delete` 通过文件名、标准输入、资源的ID或标签删除资源
   `kubectl delete (-f FILENAME | TYPE [NAME | /NAME | -l label | --all]) [flags]`
   Delete resources either from a file, stdin, or specifying label selectors, names, resource selectors, or resources.
-* `describe`
+* `describe` 详细描述某个资源的信息
   `kubectl describe (-f FILENAME | TYPE [NAME_PREFIX | /NAME | -l label]) [flags]`
   Display the detailed state of one or more resources.
 * `edit`
   `kubectl edit (-f FILENAME | TYPE NAME | TYPE/NAME) [flags]`
   Edit and update the definition of one or more resources on the server by using the default editor.
-* `exec`
+* `exec` 在一个 pod 的一个容器中执行一个命令
   `kubectl exec POD [-c CONTAINER] [-i] [-t] [flags] [-- COMMAND [args...]]`
   Execute a command against a container in a pod,
 * `explain`
   `kubectl explain [--include-extended-apis=true] [--recursive=false] [flags]`
   Get documentation of various resources. For instance pods, nodes, services, etc.
-* `expose`
+* `expose` 将资源对象暴露为 Kubernetes Service
   `kubectl expose (-f FILENAME | TYPE NAME | TYPE/NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [----external-ip=external-ip-of-service] [--type=type] [flags]`
   Expose a replication controller, service, or pod as a new Kubernetes service.
-* `get`
+* `get` 显示一个或多个资源的信息
   `kubectl get (-f FILENAME | TYPE [NAME | /NAME | -l label]) [--watch] [--sort-by=FIELD] [[-o | --output]=OUTPUT_FORMAT] [flags]`
   List one or more resources.
-* `label`
+* `label` 修改某个资源上的标签
   `kubectl label (-f FILENAME | TYPE NAME | TYPE/NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--overwrite] [--all] [--resource-version=version] [flags]`
   Add or update the labels of one or more resources.
-* `logs`
+* `logs` 打印在 pod 中的容器的日志信息
   `kubectl logs POD [-c CONTAINER] [--follow] [flags]`
   Print the logs for a container in a pod.
 * `patch`
@@ -65,13 +68,13 @@
 * `rolling-update`
   `kubectl rolling-update OLD_CONTROLLER_NAME ([NEW_CONTROLLER_NAME] --image=NEW_CONTAINER_IMAGE | -f NEW_CONTROLLER_SPEC) [flags]`
   Perform a rolling update by gradually replacing the specified replication controller and its pods.
-* `run`	
+* `run`	在集群中运行一个独立的镜像
   `kubectl run NAME --image=image [--env="key=value"] [--port=port] [--replicas=replicas] [--dry-run=bool] [--overrides=inline-json] [flags]`
   Run a specified image on the cluster.
-* `scale`
+* `scale` 调节 Replication Controller 副本数量
   `kubectl scale (-f FILENAME | TYPE NAME | TYPE/NAME) --replicas=COUNT [--resource-version=version] [--current-replicas=count] [flags]`
   Update the size of the specified replication controller.
-* stop	
+* stop 建议使用 `kubectl delete`
   `kubectl stop`
   Deprecated: Instead, see `kubectl delete`.
 * `version`
