@@ -1,4 +1,5 @@
-### Kubernetes 基础 - 入门操作
+### Kubernetes basic
+入门操作
 
 ##### Create a Kubernetes cluster
 ```bash

@@ -1,11 +1,8 @@
 
-## Kubernetes 操作实践
-
-
+## Kubernetes
 @import "kubernetes-kubespray.md"
 
 ---
-
 @import "kubernetes-concept.md"
 
 ---
