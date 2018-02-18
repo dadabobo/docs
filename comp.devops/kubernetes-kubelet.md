@@ -1,5 +1,50 @@
 ### Kubernetets - kubelet
 
+###### Synopsis
+Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作方式是PodSpec。PodSpec是一个描述一个pod的YAML或JSON对象。kubelet采用通过各种机制（主要通过apiserver）提供的一组PodSpecs，并确保这些PodSpec中描述的容器运行正常。Kubelet不管理不是由Kubernetes创建的容器。
+
+除了来自apiserver的PodSpec之外，容器清单可以通过三种方式提供给Kubelet。
+* 文件：在命令行上作为标志传递的路径。这条路径下的文件将被定期监控更新。监控周期默认为20秒，可通过标志进行配置。
+* HTTP端点：HTTP端点作为命令行上的参数传递。该端点每20秒检查一次（也可用标志配置）。
+* HTTP服务器：kubelet还可以侦听HTTP并响应一个简单的API（当前未指定）提交新的清单。
+
+常用选项
+* `--address`
+  kubelet 服务监听的地址 (默认: `0.0.0.0`)
+* `--port`  
+  kubelet 服务监听的端口 (默认:`10250`)
+* `--read-only-port`
+  只读端口，可以不用验证和授权机制，直接访问 (默认:`10255`)
+* `--allow-privileged`
+  是否允许容器运行在 privileged 模式 (默认:`false`)
+* `--api-servers`
+  以逗号分割的 API Server 地址，用于和集群中数据交互  (默认:`[]`)
+* `--cadvisor-port`
+  当前节点 cadvisor 运行的端口 (默认:`4194`)
+* `--pod-manifest-path`
+  本地 manifest 文件的路径或者目录 (默认:`""`)
+* `file-check-frequency`
+  轮询本地 manifest 文件的时间间隔
+* `--container-runtime`
+  后端容器 runtime，支持 docker 和 rkt (默认:`docker`)
+* `--enable-server`
+  是否启动 kubelet HTTP server
+* `--healthz-bind-address`
+  健康检查服务绑定的地址，设置成 0.0.0.0 可以监听在所有网络接口 (默认: `127.0.0.1`)
+* `--healthz-port`
+  健康检查服务的端口 (默认:`10248`)
+* `--hostname-override`
+  指定 hostname，如果非空会使用这个值作为节点在集群中的标识
+* `--pod-infra-container-image`
+  基础镜像地址，每个 pod 最先启动的容器，会配置共享的网络
+  (默认: `gcr.io/google_containers/pause-amd64:3.0`)
+* `root-dir`
+  kubelet 保存数据的目录
+* `--runonce`
+  从本地 manifest 或者 URL 指定的 manifest 读取并运行结束就退出，和 `--api-servers`、`--enable-server` 参数不兼容
+
+
+###### Examples
 master
 ```yaml
 ExecStart=/usr/bin/docker run \
@@ -45,7 +90,6 @@ ExecStart=/usr/bin/docker run \
   Path to a kubeconfig file, specifying how to connect to the API server. (default "`/var/lib/kubelet/kubeconfig`")
 * `--register-schedulable=false`
 
-
 node
 ```yaml
 ExecStart=/usr/bin/docker run \
@@ -81,14 +125,6 @@ ExecStart=/usr/bin/docker run \
 * `--tls-private-key-file string`
   File containing x509 private key matching `--tls-cert-file`.
 
-
-###### Synopsis
-Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作方式是PodSpec。PodSpec是一个描述一个pod的YAML或JSON对象。kubelet采用通过各种机制（主要通过apiserver）提供的一组PodSpecs，并确保这些PodSpec中描述的容器运行正常。Kubelet不管理不是由Kubernetes创建的容器。
-
-除了来自apiserver的PodSpec之外，容器清单可以通过三种方式提供给Kubelet。
-* 文件：在命令行上作为标志传递的路径。这条路径下的文件将被定期监控更新。监控周期默认为20秒，可通过标志进行配置。
-* HTTP端点：HTTP端点作为命令行上的参数传递。该端点每20秒检查一次（也可用标志配置）。
-* HTTP服务器：kubelet还可以侦听HTTP并响应一个简单的API（当前未指定）提交新的清单。
 
 ###### Options
 * `--address ip`
