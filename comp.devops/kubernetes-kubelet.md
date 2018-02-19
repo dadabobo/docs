@@ -1,4 +1,5 @@
 ### Kubernetets - kubelet
+[kubelet](https://kubernetes.io/docs/reference/generated/kubelet/)
 
 ###### Synopsis
 kubelet的主要功能就是定时从某个地方获取节点上 pod/container 的期望状态（运行什么容器、运行的副本数量、网络或者存储如何配置等等），并调用对应的容器平台接口达到这个状态。

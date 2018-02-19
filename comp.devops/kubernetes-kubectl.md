@@ -1,4 +1,6 @@
 ### Kubernetets - kubectl
+[Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
+
 Kubernetes 命令行工具 `kubectl`, 用它将 API server 的 API 包装成简单的命令集供我们使用.
 
 ```bash
@@ -196,3 +198,17 @@ Other Commands:
   Runs a command-line plugin
 * `version`
   Print the client and server version information
+
+
+###### Kubernetes 对象管理
+[Kubernetes Object Management](https://kubernetes.io/docs/concepts/overview/object-management-kubectl/overview/)
+`kubectl` 命令行工具支持多种不同的方法来创建和管理Kubernetes对象。
+* 命令式命令
+  操作活动对象, 开发环境
+  `kubectl run nginx --image nginx`
+* 命令式对象配置
+  个别文件，生产环境
+  `kubectl create -f nginx.yaml`
+* 声明式对象配置
+  文件目录，生产环境 
+  `kubectl apply -f configs/`
