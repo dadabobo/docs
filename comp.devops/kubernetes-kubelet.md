@@ -1,6 +1,10 @@
 ### Kubernetets - kubelet
 
 ###### Synopsis
+kubelet的主要功能就是定时从某个地方获取节点上 pod/container 的期望状态（运行什么容器、运行的副本数量、网络或者存储如何配置等等），并调用对应的容器平台接口达到这个状态。
+
+集群状态下，kubelet 会从 master 上读取信息，但其实 kubelet 还可以从其他地方获取节点的 pod 信息。
+
 Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作方式是PodSpec。PodSpec是一个描述一个pod的YAML或JSON对象。kubelet采用通过各种机制（主要通过apiserver）提供的一组PodSpecs，并确保这些PodSpec中描述的容器运行正常。Kubelet不管理不是由Kubernetes创建的容器。
 
 除了来自apiserver的PodSpec之外，容器清单可以通过三种方式提供给Kubelet。
@@ -35,6 +39,14 @@ Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作
   健康检查服务的端口 (默认:`10248`)
 * `--hostname-override`
   指定 hostname，如果非空会使用这个值作为节点在集群中的标识
+* `--log-dir`
+  日志文件，如果非空，会把 log 写到该文件
+* `--logtostderr`
+  是否打印 log 到终端 (默认：`true`)
+* `--max-open-files`
+  允许 kubelet 打开文件的最大值（默认：`1000000`）  
+* `--max-pods`
+  允许 kubelet 运行 pod 的最大值 (默认：`110`)  
 * `--pod-infra-container-image`
   基础镜像地址，每个 pod 最先启动的容器，会配置共享的网络
   (默认: `gcr.io/google_containers/pause-amd64:3.0`)
@@ -42,35 +54,54 @@ Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作
   kubelet 保存数据的目录
 * `--runonce`
   从本地 manifest 或者 URL 指定的 manifest 读取并运行结束就退出，和 `--api-servers`、`--enable-server` 参数不兼容
+* `--v`
+  日志 level (默认：`0`)
 
 
 ###### Examples
 master
 ```yaml
-ExecStart=/usr/bin/docker run \
-          --volume=/:/rootfs:ro \
-          --volume=/sys:/sys:ro \
-          --volume=/etc/kubernetes:/etc/kubernetes:ro \
-          --volume=/var/lib/docker/:/var/lib/docker:rw \
-          --volume=/var/lib/kubelet/:/var/lib/kubelet:rw \
-          --volume=/var/run:/var/run:rw \
-          --net=host \
-          --pid=host \
-          --privileged=true \
-          --name=kubelet \
-          -d \
-          wangwg2/hyperkube-amd64:__RELEASE__ \
-            /hyperkube kubelet \
-            --address=$private_ipv4 \
-            --network-plugin= \
-            --pod-infra-container-image=wangwg2/pause-amd64:3.0 \
-            --register-schedulable=false \
-            --allow-privileged=true \
-            --pod-manifest-path=/etc/kubernetes/manifests \
-            --hostname-override=$public_ipv4 \
-            --cluster_dns=10.100.0.10 \
-            --cluster_domain=__DNS_DOMAIN__ \
-            --kubeconfig=/etc/kubernetes/master-kubeconfig.yaml
+- name: kube-kubelet.service
+  command: start
+  content: |
+    [Unit]
+    Description=Kubernetes Kubelet
+    Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+    Requires=kube-certs.service
+    Wants=hyperkube-download.service hyperkube-import.service
+    After=kube-certs.service hyperkube-download.service hyperkube-import.service
+    [Service]
+    ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+    ExecStartPre=-/usr/bin/docker rm -f kubelet
+    ExecStart=/usr/bin/docker run \
+      --volume=/:/rootfs:ro \
+      --volume=/sys:/sys:ro \
+      --volume=/etc/kubernetes:/etc/kubernetes:ro \
+      --volume=/var/lib/docker/:/var/lib/docker:rw \
+      --volume=/var/lib/kubelet/:/var/lib/kubelet:rw \
+      --volume=/var/run:/var/run:rw \
+      --net=host \
+      --pid=host \
+      --privileged=true \
+      --name=kubelet \
+      -d \
+      wangwg2/hyperkube-amd64:v1.9.2 \
+        /hyperkube kubelet \
+        --address=$private_ipv4 \
+        --network-plugin= \
+        --pod-infra-container-image=wangwg2/pause-amd64:3.0 \
+        --register-schedulable=false \
+        --allow-privileged=true \
+        --pod-manifest-path=/etc/kubernetes/manifests \
+        --hostname-override=$public_ipv4 \
+        --cluster_dns=10.100.0.10 \
+        --cluster_domain=cluster.local \
+        --kubeconfig=/etc/kubernetes/master-kubeconfig.yaml
+    Restart=on-failure
+    RestartSec=10
+    WorkingDirectory=/root/
+    [Install]
+    WantedBy=multi-user.target
 ```
 * `--address ip`
   The IP address for the Kubelet to serve on (set to 0.0.0.0 for all interfaces) (default 0.0.0.0)
@@ -124,6 +155,35 @@ ExecStart=/usr/bin/docker run \
   File containing x509 Certificate used for serving HTTPS (with intermediate certs, if any, concatenated after server cert). If `--tls-cert-file` and `--tls-private-key-file` are not provided, a self-signed certificate and key are generated for the public address and saved to the directory passed to `--cert-dir`.
 * `--tls-private-key-file string`
   File containing x509 private key matching `--tls-cert-file`.
+
+###### 主要功能
+* pod 管理
+  在 kubernetes 的设计中，最基本的管理单位是 pod，而不是 container。pod 是 kubernetes 在容器上的一层封装，由一组运行在同一主机的一个或者多个容器组成。
+* 容器健康检查
+  创建了容器之后，kubelet 还要查看容器是否正常运行，如果容器运行出错，就要根据设置的重启策略进行处理。检查容器是否健康主要有两种方式：在容器中执行命令和通过 HTTP 访问预定义的 endpoint。
+  ```yaml
+  livenessProbe:
+    exec:
+      command:
+        - cat
+        - /tmp/health
+    initialDelaySeconds: 15
+    timeoutSeconds: 1
+  ```
+  ```yaml
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+      httpHeaders:
+        - name: X-Custom-Header
+          value: Awesome
+    initialDelaySeconds: 15
+    timeoutSeconds: 1 可以看到，你也可以自定义发送的 HTTP 请求的头部。
+  ```
+* 容器监控
+  kubelet 还有一个重要的责任，就是监控所在节点的资源使用情况，并定时向 master 报告。知道整个集群所有节点的资源情况，对于 pod 的调度和正常运行至关重要。
+  kubelet 使用cAdvisor进行资源使用率的监控。
 
 
 ###### Options
