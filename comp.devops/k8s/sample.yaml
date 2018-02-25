@@ -1,0 +1,99 @@
+## pod
+apiVersion: v1
+kind: Pod
+metadata:
+   name: php-test
+   labels:
+     name: php-test
+spec:
+  containers:
+  - name: php-test
+    image: 192.168.174.131:5000/php-base:1.0
+    env:
+    - name: ENV_TEST_1
+      value: env_test_1
+    - name: ENV_TEST_2
+      value: env_test_2
+    ports:
+    - containerPort: 80
+      hostPort: 80
+
+## ReplicationController
+apiVersion: v1
+kind: ReplicationController
+metadata:
+   name: php-controller
+   labels:
+     name: php-controller
+spec:
+  replicas: 2
+  selector:
+     name: php-test-pod
+  template:
+    metadata:
+     labels:
+       name: php-test-pod
+    spec:
+      containers:
+      - name: php-test
+        image: 192.168.174.131:5000/php-base:1.0
+        env:
+        - name: ENV_TEST_1
+          value: env_test_1
+        - name: ENV_TEST_2
+          value: env_test_2
+        ports:
+        - containerPort: 80
+
+## service
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-service
+  labels:
+    name: php-service
+spec:
+  ports:
+  - port: 8081
+    targetPort: 80
+    protocol: TCP
+  selector:
+    name: php-test-pod
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-nodeport-service
+  labels:
+    name: php-nodeport-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    targetPort: 80
+    protocol: TCP
+    nodePort: 30001
+  selector:
+    name: php-test-pod
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-loadbalancer-service
+  labels:
+    name: php-loadbalancer-service
+spec:
+  type: LoadBalancer
+  clusterIp: 10.254.165.216
+  selector:
+    app: php-test-pod
+  ports:
+  - port: 8081
+    targetPort: 80
+    protocol: TCP
+    nodePort: 30001
+ status:
+  loadBalancer:
+    ingress:
+      ip: 192.168.174.127  # 注意这是负载均衡器的IP地址
+
