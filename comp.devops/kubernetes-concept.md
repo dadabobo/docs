@@ -149,6 +149,19 @@ deployment "nginx-deployment" created
 * `metadata`：唯一标识该对象的元数据，包括name，UID，可选的namespace。
 * `spec`：标识对象的详细信息，不同对象的spec的格式不同，可以嵌套其他对象的字段。
 
+```yaml
+apiVersion: v1 # 必须，指定api版本，此值必须在kubectl apiversion中  
+kind: Pod      # 必须，指定创建资源的角色/类型  
+metadata:      # 必须，资源的元数据/属性  
+  name: coredns           # 必须，资源名称
+  namespace: kube-system  # 可选，资源命名空间
+  labels:                 # 必须，资源标签
+    k8s-app: coredns
+    kubernetes.io/name: "CoreDNS"
+spec:          # 指定该资源的详细内容
+  # ...
+```
+
 
 ###### Diagram
 ```plantuml

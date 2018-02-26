@@ -19,6 +19,7 @@ kubectl run             # 在集群中运行一个独立的镜像
 kubectl scale           # 调节 Replication Controller 副本数量
 ```
 
+###### kubectl commmand options
 kubectl [command] [options]
 * `annotate`
   `kubectl annotate (-f FILENAME | TYPE NAME | TYPE/NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--overwrite] [--all] [--resource-version=version] [flags]`	
@@ -198,6 +199,50 @@ Other Commands:
   Runs a command-line plugin
 * `version`
   Print the client and server version information
+
+
+######  Kubectl 自动补全
+```bash
+# setup autocomplete in bash, bash-completion package should be installed first.
+source <(kubectl completion bash)
+# setup autocomplete in zsh
+source <(kubectl completion zsh) 
+```
+
+###### 常用命令
+```bash
+kubectl get namespace
+
+kebectl get po --all-namespaces
+kebectl get po --namespace=kube-system
+kubectl get po coredns-xxxx -o yaml --namespace=kube-system
+
+kubectl describe po coredns-xxxx --namespace=kube-system
+kubectl logs coredns-xxxx --namespace=kube-system
+```
+
+###### Kubectl 上下文和配置
+设置 kubectl 命令交互的 kubernetes 集群并修改配置信息。
+```bash
+$ kubectl config view # 显示合并后的 kubeconfig 配置
+
+# 同时使用多个 kubeconfig 文件并查看合并后的配置
+$ KUBECONFIG=~/.kube/config:~/.kube/kubconfig2 kubectl config view
+
+# 获取 e2e 用户的密码
+$ kubectl config view -o jsonpath='{.users[?(@.name == "e2e")].user.password}'
+
+$ kubectl config current-context              # 显示当前的上下文
+$ kubectl config use-context my-cluster-name  # 设置默认上下文为 my-cluster-name
+
+# 向 kubeconf 中增加支持基本认证的新集群
+$ kubectl config set-credentials kubeuser/foo.kubernetes.com --username=kubeuser --password=kubepassword
+
+# 使用指定的用户名和 namespace 设置上下文
+$ kubectl config set-context gce --user=cluster-admin --namespace=foo \
+  && kubectl config use-context gce
+```
+
 
 
 ###### Kubernetes 对象管理
