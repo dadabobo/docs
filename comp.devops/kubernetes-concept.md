@@ -52,7 +52,7 @@
 @import "img/k8s/k8s-module_rollingupdatesB.png" {width=600}
  
 ###### 概念
-@import "img/k8s/k8s-concept.png" 
+@import "img/k8s/k8s-concept.png" {width=600}
 @import "img/k8s/k8s-minikube-part.png" {width=600}
 
 ###### Kubernetes中的资源管理与容器设计模式

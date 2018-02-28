@@ -1,4 +1,4 @@
-## kubernetes-vagrant-coreos-cluster
+### kubernetes-vagrant-coreos-cluster
 Kubernetes cluster (for testing purposes) made easy with Vagrant and CoreOS.
 参考 [pires/kubernetes-vagrant-coreos-cluster](https://github.com/pires/kubernetes-vagrant-coreos-cluster).
 

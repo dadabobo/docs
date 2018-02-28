@@ -1,76 +1,57 @@
-#### Kubernetes API Server
+### Kubernetes - apiserver
 Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的api对象的数据。API服务器为REST操作提供服务，并将前端提供给所有其他组件进行交互的集群共享状态。
+* [API Server权限控制方式介绍](https://www.cnblogs.com/fengjian2016/p/8134068.html)
+* [kubernetes如何使用https的webapi](https://segmentfault.com/a/1190000003115642)
+* [使用启动引导令牌（Bootstrap Tokens）认证](https://k8smeetup.github.io/docs/admin/bootstrap-tokens/)
+* [Kubernetes技术分析之安全](http://dockone.io/article/599)
 
-###### 示例选项
-* `--logtostderr`  [`KUBE_LOGTOSTDERR`]
-	输出到 `stderr`,不输到日志文件。
-	示例: `--logtostderr=true`
-* `--v` [`KUBE_LOG_LEVEL`]
-	日志级别
-	示例: `--v=0`
-* `--etcd-servers` [`KUBE_ETCD_SERVERS`]
-	以逗号分隔的 etcd 服务列表，与 `--etcd-config` 互斥
-	示例: `--etcd-servers=http://192.168.99.91:2379`
-* `--advertise-address` [`KUBE_API_ADDRESS`]
-	通过该 ip 地址向集群其他节点公布 api server 的信息，必须能够被其他节点访问
-	示例: `--advertise-address=192.168.99.91`
+###### 概要
+两种 apiserver 访问方式： 
+* 本地端口 (HTTP)
+	HTTP; 没有认证和授权检查，主机访问受保护
+	IP: `--insecure-bind-address`,`--insecure-port`
+* 安全端口 (HTTPS)
+	HTTPS; 支持认证授权
+	IP: `--bind-address`, `--secure-port`
+	证书: `--tls-cert-file`,`--tls-private-key-file` 或 `--cert-dir`
+
+三种认证方式：
+* 证书认证: `--client-ca-file`
+* token认证: `--token_auth_file`。token文件包含三列: `token,username,userid`。
+* 基本信息认证： `--basic_auth_file`。文件包含三列：`password,username,userid`。
+
+###### kubernetes认证设置
+kubernetes中，验证用户是否有权限操作api的方式有三种：证书认证，token认证，基本信息认证。
+* 证书认证
+	设置apiserver的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。
+* token认证
+	设置apiserver的启动参数：`--token_auth_file=SOMEFILE`，目前使用token还存在争议，而且如果变更了这个文件内容，只有重启apiserver才能使配置生效。
+	token file 的格式包含三列： `token,username,userid`。
+	当使用token作为验证方式时，在对apiserver的http请求中，增加一个Header字段：`Authorization`，将它的值设置为：`Bearer SOMETOKEN`。
+* 基本信息认证
+	设置apiserver的启动参数：`--basic_auth_file=SOMEFILE`，如果更改了文件中的密码，只有重新启动apiserver使其重新生效。其文件的基本格式包含三列：`password,username,userid`。
+	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODEDUSER:PASSWORD`.
+
+###### API Server 认证权限准入控制
+**HTTP**
+HTTP服务。在HTTP中没有认证和授权检查，主机访问受保护。
+* `--insecure-bind-address`
+	HTTP 访问的地址（默认本地服务）
+	The IP address on which to serve the `--insecure-port` (set to 0.0.0.0 for all interfaces). 
+  (default `127.0.0.1`)
+* `--insecure-port`
+  HTTP访问，自定义非安全监听端口
+	The port on which to serve unsecured, unauthenticated access. It is assumed that firewall rules are set up such that this port is not reachable from outside of the cluster and that port 443 on the cluster's public address is proxied to this port. This is performed by nginx in the default setup. 
+  (default `8080`) 
+
+**HTTPS**
+HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-private-key-file`
+认证方式: 令牌文件或者客户端证书;
+使用基于策略的授权方式；
 * `--bind-address` [`KUBE_API_ADDRESS`]
 	HTTPS 安全接口的监听地址
-  示例： `--bind-address=192.168.99.91`
-* `--insecure-bind-address` [`KUBE_API_ADDRESS`]
-	HTTP 访问的地址
-  示例: `--insecure-bind-address=192.168.99.91`
-* `--allow-privileged` [`KUBE_ALLOW_PRIV`]
-	是否允许 privileged 容器运行
-	示例: `-allow-privileged=true`
-* `--service-cluster-ip-range` [`KUBE_SERVICE_ADDRESSES`]
-	service 要使用的网段，使用 CIDR 格式，参考 kubernetes 中 service 的定义
-	示例: `--service-cluster-ip-range=10.254.0.0/16`
-* `--admission-control` [`KUBE_ADMISSION_CONTROL`]
-	准入控制模块列表
-	示例: `--admission-control=ServiceAccount,NamespaceLifecycle,NamespaceExists,LimitRanger,ResourceQuota`
-* `--authorization-mode`
-	授权模式 ，安全接口上的授权
-	示例: `--authorization-mode=Node,RBAC`
-* `--runtime-config`
-	示例: `--runtime-config=rbac.authorization.k8s.io/v1beta1`
-* `--kubelet-https`
-	示例: `--kubelet-https=true`
-* `--enable-bootstrap-token-auth`
-	示例: `--enable-bootstrap-token-auth`
-* `--token-auth-file`
-	示例: `--token-auth-file=/etc/kubernetes/token.csv`
-* `--service-node-port-range`
-	示例: `--service-node-port-range=30000-32767`
-* `--tls-cert-file`
-	示例: `--tls-cert-file=/etc/kubernetes/ssl/kubernetes.pem`
-* `--tls-private-key-file`
-	示例: `--client-ca-file=/etc/kubernetes/ssl/ca.pem`
-* `--client-ca-file`
-	示例: `--client-ca-file=/etc/kubernetes/ssl/ca.pem`
-* `--service-account-key-file`
-	示例: `--service-account-key-file=/etc/kubernetes/ssl/ca-key.pem`
-* `--enable-swagger-ui`
-	示例: `--enable-swagger-ui=true`
-* `--apiserver-count`
-	示例: `--apiserver-count=3`
-* `--audit-log-maxage`
-	示例: `--audit-log-maxage=30`
-* `--audit-log-maxbackup`
-	示例: `--audit-log-maxbackup=3` 
-* `--audit-log-maxsize`
-	示例: `--audit-log-maxsize=100`
-* `--audit-log-path` 
-	示例: `--audit-log-path=/var/lib/audit.log`
-* `--event-ttl`		
-	示例: `--event-ttl=1h`
-	
-
-###### API Server 权限认证参数
-* `--insecure-port`
-  自定义非安全监听端口
-	The port on which to serve unsecured, unauthenticated access. It is assumed that firewall rules are set up such that this port is not reachable from outside of the cluster and that port 443 on the cluster's public address is proxied to this port. This is performed by nginx in the default setup. 
-  (default `8080`)  
+	The IP address on which to listen for the `--secure-port` port. The associated interface(s) must be reachable by the rest of the cluster, and by CLI/web clients. If blank, all interfaces will be used (0.0.0.0). 
+  (default `0.0.0.0`)
 * `--secure-port`
   自定义安全监听端口
  	The port on which to serve HTTPS with authentication and authorization. If 0, don't serve HTTPS at all. 
@@ -79,24 +60,28 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
   设置安全证书文件
   File containing the default x509 Certificate for HTTPS. (CA cert, if any, concatenated after server cert). If HTTPS serving is enabled, and `--tls-cert-file` and `--tls-private-key-file` are not provided, a self-signed certificate and key are generated for the public address and saved to the directory specified by `--cert-dir`.
 * `--tls-private-key-file`
-  设置私钥文件
+	设置私钥文件
 	File containing the default x509 private key matching `--tls-cert-file`.
 * `--cert-dir`
   安全证书文件和私钥文件被设置时，此属性忽略。安全证书文件和私钥文件未设置时，apiserver会自动为该端口绑定的公有IP地址分别生成一个自注册的证书文件和密钥并将它们存储在 `/var/run/kubernetes` 下
   The directory where the TLS certs are located. If `--tls-cert-file` and `--tls-private-key-file` are provided, this flag will be ignored.   
   (default "`/var/run/kubernetes`")
-* `--service-account-key-file stringArray`
-  服务账号文件，包含x509 公私钥
-  File containing PEM-encoded x509 RSA or ECDSA private or public keys, used to verify ServiceAccount tokens. If unspecified,`--tls-private-key-file` is used. The specified file can contain multiple keys, and the flag can be specified multiple times with different files.
+
+认证 (证书认证、token认证、基本信息认证)
 * `--client-ca-file`
-  client证书文件
+  client证书文件,如果指定，则该客户端证书将被用于认证过程。
+	如果设置，任何呈现由客户端CA文件中的某个权威机构签发的客户端证书的请求都将使用与客户端证书的CommonName相对应的身份进行身份验证。
 	If set, any request presenting a client certificate signed by one of the authorities in the client-ca-file is authenticated with an identity corresponding to the CommonName of the client certificate.
 * `--token-auth-file`
-  token文件
+  用来访问加密端口的token认证文件
+	如果设置，将通过令牌认证来使用该文件来保护API服务器的安全端口。
 	If set, the file that will be used to secure the secure port of the API server via token authentication.
 * `--basic-auth-file`
   基本信息认证文件
+	如果设置，文件将被用于通过http基本身份验证的方式访问API服务器的安全端口。
 	If set, the file that will be used to admit requests to the secure port of the API server via http basic authentication.
+
+Authorization (授权)
 * `--authorization-mode`
   授权模式
 	Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. 
@@ -104,6 +89,8 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
 * `--authorization-policy-file`
   授权文件
 	File with authorization policy in csv format, used with * `--authorization-mode=ABAC, on the secure port.
+
+Admission Control (准入控制)
 * `--admission-control`
   准入控制模块列表
   Admission is divided into two phases. In the first phase, only mutating admission plugins run. In the second phase, only validating admission plugins run. The names in the below list may represent a validating plugin, a mutating plugin, or both. Within each phase, the plugins will run in the order in which they are passed to this flag. 
@@ -112,6 +99,76 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
   File with admission control configuration.
   准入控制配置文件
 
+Misc
+* `--service-account-key-file stringArray`
+  服务账号文件，包含PEM编码的x509 RSA或ECDSA私钥或公钥的文件，用于验证ServiceAccount令牌。如果未指定则使用 `--tls-private-key-file`。指定的文件可以包含多个键，并且可以使用不同的文件多次指定该标志。
+  File containing PEM-encoded x509 RSA or ECDSA private or public keys, used to verify ServiceAccount tokens. If unspecified,`--tls-private-key-file` is used. The specified file can contain multiple keys, and the flag can be specified multiple times with different files.
+
+###### 选项示例
+```yaml
+## 必须项 ------------
+--service-cluster-ip-range=10.254.0.0/16    # service 要使用的网段，使用 CIDR 格式，参考 service 的定义
+--etcd-servers=http://192.168.99.91:2379    # 以逗号分隔的 etcd 服务列表，与 `--etcd-config` 互斥
+
+## 可选项 -------------
+## HTTP/HTTPS 监听的IP与端口
+--apiserver-count=3                         # apiservers 数量 (默认1) 
+--advertise-address=192.168.99.91           # 通过该 ip 地址向集群其他节点公布 api server 的信息
+--bind-address=192.168.99.91                # HTTPS 安全端口监听的IP (默认 0.0.0.0)
+--secure-port=6443                          # HTTPS 安全端口 (默认 6443)
+--insecure-bind-address=192.168.99.91       # HTTP 非安全端口监听的IP (默认 127.0.0.1)
+--insecure-port=8080                        # HTTP 非安全端口监听的端口 (默认 8080)
+--service-node-port-range=30000-32767       # Service 的 NodePort 所能使用的主机端口号范围
+--runtime-config=rbac.authorization.k8s.io/v1beta1  # 打开或关闭针对某个api版本支持
+
+## 证书
+# HTTPS密钥与证书
+--tls-private-key-file=/etc/kubernetes/ssl/kubernetes-key.pem
+--tls-cert-file=/etc/kubernetes/ssl/kubernetes.pem
+# 认证: 证书认证 + Token 认证
+--client-ca-file=/etc/kubernetes/ssl/ca.pem # 证书认证: client证书文件
+--token-auth-file=/etc/kubernetes/token.csv # tocken 认证: token文件
+# 授权模式： 安全接口上的授权
+--authorization-mode=Node,RBAC              
+# 准入控制： 一串用逗号连接的有序的准入模块列表
+--admission-control=ServiceAccount,NamespaceLifecycle,NamespaceExists,LimitRanger,ResourceQuota
+
+--service-account-key-file=/etc/kubernetes/ssl/ca-key.pem
+--enable-bootstrap-token-auth               # 启动引导令牌认证（Bootstrap Tokens）
+--allow-privileged=true                     # 是否允许 privileged 容器运行
+--kubelet-https=true                        # 指定 kubelet 是否使用 HTTPS 连接
+--enable-swagger-ui=true                    # 开启 Swagger UI
+
+## 日志
+--logtostderr=true                          # 输出到 `stderr`,不输到日志文件。
+--v=0                                       # 日志级别
+--event-ttl=1h                              # 各种事件在系统中的保存时间
+--audit-log-path=/var/lib/audit.log         # 审计日志路径
+--audit-log-maxage=30                       # 旧日志最长保留天数
+--audit-log-maxbackup=3                     # 旧日志文件最多保留个数
+--audit-log-maxsize=100                     # 日志文件最大大小（单位MB）
+```
+
+
+```bash
+## 如通过 https 连接 etcd server
+--etcd-cafile=/etc/kubernetes/ssl/ca.pem
+--etcd-certfile=/etc/kubernetes/ssl/kubernetes.pem
+--etcd-keyfile=/etc/kubernetes/ssl/kubernetes-key.pem
+--etcd-servers=https://192.168.99.91:2379,https://192.168.99.92:2379
+
+## apiserver的启动参数中加入：
+--admission_control=ServiceAccount
+  # k8s会给每个namespace都设置至少一个secret，secret作为一个存储介质，可以存储证书，token，甚至配置文件
+--client_ca_file=/var/run/kubernetes/ca.crt
+  # 每个namespace的默认的secret中都会记录ca.crt 
+--tls-private-key-file=/var/run/kubernetes/server.key 
+--tls-cert-file=/var/run/kubernetes/server.crt
+
+## controller-manager的启动参数中加入：
+--service_account_private_key_file=/var/run/kubernetes/server.key
+--root-ca-file="/var/run/kubernetes/ca.crt" 
+```
 
 ###### 命令选项
 * `--admission-control stringSlice`
@@ -213,7 +270,7 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
 * `--enable-aggregator-routing`
 	Turns on aggregator routing requests to endoints IP rather than cluster IP.
 * `--enable-bootstrap-token-auth`
-	Enable to allow secrets of type 'bootstrap.kubernetes.io/token' in the 'kube-system' namespace to be used for TLS bootstrapping authentication.
+	Enable to allow secrets of type '`bootstrap.kubernetes.io/token`' in the 'kube-system' namespace to be used for TLS bootstrapping authentication.
 * `--enable-garbage-collector`
 	Enables the generic garbage collector. MUST be synced with the corresponding flag of the kube-controller-manager. 
   (default `true`)
@@ -239,7 +296,7 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
 * `--etcd-servers stringSlice`
 	List of etcd servers to connect with (scheme://ip:port), comma separated.
 * `--etcd-servers-overrides stringSlice`
-	Per-resource etcd servers overrides, comma separated. The individual override format: group/resource#servers, where servers are http://ip:port, semicolon separated.
+	Per-resource etcd servers overrides, comma separated. The individual override format: group/resource#servers, where servers are `http://ip:port`, semicolon separated.
 * `--event-ttl duration`
 	Amount of time to retain events. 
   (default `1h0m0s`)

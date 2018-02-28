@@ -1,24 +1,38 @@
 
 ## Kubernetes
-@import "kubernetes-kubespray.md"
+---
+@import "./kubernetes-apiserver.md"
 
 ---
-@import "kubernetes-concept.md"
+@import "./kubernetes-controllermanager.md"
 
 ---
-@import "kubernetes-basic.md"
+@import "./kubernetes-scheduler.md"
 
 ---
-@import "kubernetes-coreos.md"
+@import "./kubernetes-kubelet.md"
 
 ---
-@import "kubernetes-kubelet.md"
+@import "./kubernetes-proxy.md"
 
 ---
-@import "kubernetes-kubectl.md"
+@import "./kubernetes-kubectl.md"
 
 ---
-@import "kubernetes-minikube.md"
+@import "./kubernetes-minikube.md"
+
+
+@import "./kubernetes-kubespray.md"
+
+---
+@import "./kubernetes-concept.md"
+
+---
+@import "./kubernetes-basic.md"
+
+---
+@import "./kubernetes-coreos.md"
+
 
 ---
 ### kubernetes创建资源对象yaml文件例子
