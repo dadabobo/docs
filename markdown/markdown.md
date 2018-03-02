@@ -1,32 +1,23 @@
-
 ## Markdown 语法
 
-#### 标题
+##### 标题
 
 分为六级
 ````
 # 一级标题
 ## 二级标题
-### 三级标题
-#### 四级标题
-##### 五级标题
+...
 ###### 六级标题
 ````
 
-#### 四级标题
-##### 五级标题
-
-#### 锚点
-
-
-
-[问内链接](#user-content-锚点);
+##### 锚点
+[页内链接](#user-content-1);
 
 #### 引用
 
 > 这是第一级引用。
 >
->> 这是第二级引用。
+>> 这是第二级引用。  
 >
 > 现在回到第一级引用。
 
@@ -49,15 +40,13 @@
 - [ ] 不勾选
 - [x] 勾选
 
-
-### 复选框
+#### 复选框
 
 使用 `- [ ]` 和 `- [x]` 语法可以创建复选框，实现 todo-list 等功能。例如：
 
 - [x] 已完成事项
 - [ ] 待办事项1
 - [ ] 待办事项2
-
 
 
 #### 代码
@@ -69,10 +58,10 @@ puts markdown.to_html
 
 #### 强调
 
-在Markdown中，可以使用 * 和 _ 来表示斜体和加粗。
+在Markdown中，可以使用 `*` 和 `_` 来表示斜体和加粗。
 
-*这是斜体*
-_这是斜体_
+*这是斜体*  
+_这是斜体_   
 
 **这是加粗**
 __这是加粗__
@@ -80,13 +69,21 @@ __这是加粗__
 
 #### 自动链接
 方括号显示说明，圆括号内显示网址， Markdown 会自动把它转成链接，例如：
+`[超强大的云开发平台Coding](http://coding.net)`
 
 [超强大的云开发平台Coding](http://coding.net)
 
 或者也可以直接用< >，将网址或者邮箱地址放在中间，也能将地址直接转成链接：
+`<support@coding.net>`  
 <support@coding.net>
 
 #### 表格
+```
+First Header | Second Header | Third Header
+------------ | ------------- | ------------
+Content Cell | Content Cell  | Content Cell
+Content Cell | Content Cell  | Content Cell
+```
 
 First Header | Second Header | Third Header
 ------------ | ------------- | ------------
@@ -94,6 +91,12 @@ Content Cell | Content Cell  | Content Cell
 Content Cell | Content Cell  | Content Cell
 
 或者也可以让表格两边内容对齐，中间内容居中，例如：
+```
+First Header | Second Header | Third Header
+:----------- | :-----------: | -----------:
+Left         | Center        | Right
+Left         | Center        | Right
+```
 
 First Header | Second Header | Third Header
 :----------- | :-----------: | -----------:
@@ -128,7 +131,6 @@ $$	x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$
 \]
 
 
-
 ### 流程图
 
 ```flow
@@ -150,15 +152,11 @@ Note right of Bob: Bob thinks
 Bob-->Alice: I am good thanks!
 ```
 
-
-
-
 [1]: http://maxiang.info/client_zh
 [2]: https://chrome.google.com/webstore/detail/kidnkfckhbdkfgbicccmdggmpgogehop
 [3]: http://adrai.github.io/flowchart.js/
 [4]: http://bramp.github.io/js-sequence-diagrams/
 [5]: https://dev.yinxiang.com/doc/articles/enml.php
-
 
 
 # 欢迎使用 Cmd Markdown 编辑阅读器
