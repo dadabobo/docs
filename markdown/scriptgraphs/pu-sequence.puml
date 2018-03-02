@@ -1,0 +1,37 @@
+@startuml
+skinparam sequence {
+  ArrowColor Black
+  ActorBackgroundColor WhiteSmoke
+  ActorBorderColor Gray
+  GroupBackgroundColor WhiteSmoke
+  LifeLineBackgroundColor WhiteSmoke
+  LifeLineBorderColor Gray
+  ParticipantBackgroundColor WhiteSmoke
+  ParticipantBorderColor Gray
+}
+
+actor User #Orange
+participant "First Class" as A  
+participant "Second Class" as B #Yellow
+participant "Last Class" as C
+
+autonumber 1
+User -[#darkred]> A: DoWork
+activate A
+
+A -> B: Create Request
+activate B #Pink
+
+B -> C: DoWork
+activate C
+
+C --> B: WorkDone
+destroy C
+
+B --> A: Request Created
+deactivate B
+
+A --> User: Done
+deactivate A
+
+@enduml

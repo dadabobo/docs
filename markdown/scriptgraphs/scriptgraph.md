@@ -33,6 +33,56 @@ Online
 
 文件扩展名 `.pu` Atom 中预览 `ctrl-alt-p`。
 
+PlantUML图形颜色, 可使用 `skinparam 参数 值` 配置:
+`skinparam classBackgroundColor WhiteSmoke` 
+
+可以使用 `skinparam monochrome true` 命令强制使用黑白色进行输出。 
+```
+参数名字                            默认值  注释
+backgroundColor                     white   页面背景色
+activityArrowColor                  #A80036 活动图中箭头的颜色
+activityBackgroundColor             #FEFECE 活动的背景色
+activityBorderColor                 #A80036 活动边界的颜色
+activityStartColor                  black   活动图开始的圆圈的颜色
+activityEndColor                    black   活动图结束的圆圈的颜色
+activityBarColor                    black   活动图中同步条的颜色
+usecaseArrowColor                   #A80036 usecase 图中箭头的颜色
+usecaseActorBackgroundColor         #FEFECE usecase 图中角色头部的颜色
+usecaseActorBorderColor             #A80036 usecase 图中角色的边界的颜色
+usecaseBackgroundColor              #FEFECE usecase 的背景色
+usecaseBorderColor                  #A80036 usecase 图中 usecase 边界的颜色
+classArrowColor                     #A80036 类图中箭头的颜色
+classBackgroundColor                #FEFECE 类图中类、接口、枚举的背景色
+classBorderColor                    #A80036 类图中类、接口、枚举的边界颜色
+packageBackgroundColor              #FEFECE 类图中包的背景色
+packageBorderColor                  #A80036 类图中包的边界颜色
+stereotypeCBackgroundColor          #ADD1B2 类图中圆圈的背景色
+stereotypeABackgroundColor          #A9DCDF 类图中抽象类圆圈的背景色
+stereotypeIBackgroundColor          #B4A7E5 类图中接口圆圈的背景色
+stereotypeEBackgroundColor          #EB937F 类图中枚举圆圈的背景色
+componentArrowColor                 #A80036 组件图中箭头的颜色
+componentBackgroundColor            #FEFECE 组件的背景色
+componentBorderColor                #A80036 组件的边界颜色
+componentInterfaceBackgroundColor   #FEFECE 组件图中接口的背景色
+componentInterfaceBorderColor       #A80036 组件图中接口的边界颜色
+noteBackgroundColor                 #FBFB77 注释的背景色
+noteBorderColor                     #A80036 注释的边界颜色
+stateBackgroundColor                #FEFECE 状态图中状态的背景色
+stateBorderColor                    #A80036 状态图中状态的边界颜色
+stateArrowColor                     #A80036 状态图中箭头的颜色
+stateStartColor                     black   状态图中开始圆圈的颜色
+stateEndColor                       black   状态图中结束圆圈的颜色
+sequenceArrowColor                  #A80036 序列图中箭头的颜色
+sequenceActorBackgroundColor        #FEFECE 序列图中角色的头部颜色
+sequenceActorBorderColor            #A80036 序列图中角色的边界颜色
+sequenceGroupBackgroundColor        #EEEEEE 序列图中 alt/opt/loop 的标头颜色
+sequenceLifeLineBackgroundColor     white   序列图中生命线的背景色
+sequenceLifeLineBorderColor         #A80036 序列图中生命线的边界的颜色
+sequenceParticipantBackgroundColor  #FEFECE 序列图中参与者的背景色
+sequenceParticipantBorderColor      #A80036 序列图中参与者的边界颜色
+```
+
+
 #### Graphviz
 * [Graphviz](http://www.graphviz.org/)
 * [graphviz-preview](https://atom.io/packages/graphviz-preview)
@@ -106,7 +156,7 @@ gantt
 <span id="plantuml-example"></span>
 #### PlantUML
 Class Digram
-```puml
+```plantuml
 @startuml
 abstract class AbstractList
 abstract AbstractCollection

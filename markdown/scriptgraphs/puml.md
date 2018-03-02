@@ -4,7 +4,7 @@
 @import "puml-archimate.puml"
 
 #### List possible sprites
-```puml
+```plantuml
 @startuml
 listsprite
 @enduml

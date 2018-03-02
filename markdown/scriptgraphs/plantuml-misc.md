@@ -2,7 +2,7 @@
 
 #### Archimate Diagram
 
-@import "plantuml.pu"
+@import "plantuml.puml"
 
 
 ```plantuml {code_block: true}

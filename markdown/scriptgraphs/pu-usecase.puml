@@ -1,0 +1,21 @@
+@startuml
+skinparam usecase {
+  ArrowColor Black
+  BackgroundColor WhiteSmoke
+  BorderColor Silver
+  ActorBackgroundColor WhiteSmoke
+  ActorBorderColor Silver
+}
+skinparam ActorBorderColor DimGray
+skinparam ActorBackgroundColor WhiteSmoke
+
+left to right direction
+actor customer
+actor clerk
+rectangle checkout {
+  customer -- (checkout)
+  (checkout) .> (payment) : include
+  (help) .> (checkout) : extends
+  (checkout) -- clerk
+}
+@enduml

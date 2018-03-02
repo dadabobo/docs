@@ -1,0 +1,59 @@
+@startuml
+skinparam class {
+  BackgroundColor WhiteSmoke 
+  ArrowColor DimGray
+  BorderColor Silver
+}
+
+skinparam stereotype {
+  CBackgroundColor WhiteSmoke
+  IBackgroundColor Azure
+  ABackgroundColor FloralWhite
+  EBackgroundColor GhostWhite
+}
+
+title Class Diagrams
+
+abstract class AbstractList #Beige
+abstract AbstractCollection
+interface List
+interface Collection
+
+class MyApp {
+  name
+  date
+  run()
+  startup()
+}
+
+class Product #Moccasin {
+
+}
+
+class House {
+
+}
+
+Product <|-- House
+Product <|-- Park
+Product <|-- Area
+
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+  Object[] elementData
+  size()
+}
+
+enum TimeUnit {
+  DAYS
+  HOURS
+  MINUTES
+}
+@enduml
