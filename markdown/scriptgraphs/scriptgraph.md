@@ -3,9 +3,10 @@
 
 Contents
 * [概述](#summary)
-* [mermaid Example](#mermaid-example)
-* [PlantUML Example](#plantuml-example)
-* [Graphviz Example](#graphviz-example)
+* [Mermaid Diagrams](#mermaid-example)
+* [PlantUML Diagrams](#plantuml-example)
+* [Wavedrom Diagrams](#wavedrom-example)
+* [Graphviz Diagrams](#graphviz-example)
 
 Online
 * [Graphviz](http://www.graphviz.org/)
@@ -21,8 +22,9 @@ Online
 * [CSDN-markdown语法之如何使用LaTeX语法编写数学公式](http://it.taocms.org/03/7247.htm)
 * [KaTeX and MathJax Comparison Demo](http://www.intmath.com/cg5/katex-mathjax-comparison.php)
 
+---
 <span id="summary"></span>
-## 概述
+### 概述
 #### PlantUML
 * [PlantUML](http://www.plantuml.com/)
 * [Using PlantUML](http://plantuml.com/running)
@@ -43,16 +45,20 @@ Online
 Write and preview GraphViz dot. Shortcut: `ctrl-shift-V`.
 Enabled for `.dot` and `.gv` files
 
-#### mermaid
+#### Mermaid
 * [atom-mermaid](https://atom.io/packages/atom-mermaid)
 * [markdown-preview-enhanced](https://atom.io/packages/markdown-preview-enhanced)
 
-----
+#### WaveDrom
+* [Hitchhiker's Guide to the WaveDrom](http://wavedrom.com/tutorial.html)
+* [drom/wavedrom](https://github.com/drom/wavedrom)
 
-## Examples
+
+----
+### Diagrams
 
 <span id="mermaid-example"></span>
-#### mermaid Examples
+#### Mermaid 
 流程图(flowchart)  
 ```mermaid
 graph LR;
@@ -98,7 +104,7 @@ gantt
 ```
 
 <span id="plantuml-example"></span>
-#### PlantUML Example
+#### PlantUML
 Class Digram
 ```puml
 @startuml
@@ -144,10 +150,20 @@ enum TimeUnit {
 @enduml
 ```
 
+<span id="wavedrom-example"></span>
+#### Wavedrom
+```wavedrom
+{ signal: [
+  { name: "CK",   wave: "P.......",                                              period: 2  },
+  { name: "CMD",  wave: "x.3x=x4x=x=x=x=x", data: "RAS NOP CAS NOP NOP NOP NOP", phase: 0.5 },
+  { name: "ADDR", wave: "x.=x..=x........", data: "ROW COL",                     phase: 0.5 },
+  { name: "DQS",  wave: "z.......0.1010z." },
+  { name: "DQ",   wave: "z.........5555z.", data: "D0 D1 D2 D3" }
+]}
+```
 
 <span id="graphviz-example"></span>
-#### Graphviz Example
-`graphviz.dot`
+#### Graphviz
 ```viz
 digraph G {
 subgraph cluster0 {
