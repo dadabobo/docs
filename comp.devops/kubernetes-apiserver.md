@@ -69,9 +69,9 @@ HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-priv
 
 认证 (证书认证、token认证、基本信息认证)
 * `--client-ca-file`
-  client证书文件,如果指定，则该客户端证书将被用于认证过程。
+	client证书文件,如果指定，则该客户端证书将被用于认证过程。
 	如果设置，任何呈现由客户端CA文件中的某个权威机构签发的客户端证书的请求都将使用与客户端证书的CommonName相对应的身份进行身份验证。
-	If set, any request presenting a client certificate signed by one of the authorities in the client-ca-file is authenticated with an identity corresponding to the CommonName of the client certificate.
+	If set, any request presenting a client certificate signed by one of the authorities in the `client-ca-file` is authenticated with an identity corresponding to the CommonName of the client certificate.
 * `--token-auth-file`
   用来访问加密端口的token认证文件
 	如果设置，将通过令牌认证来使用该文件来保护API服务器的安全端口。
@@ -87,8 +87,8 @@ Authorization (授权)
 	Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. 
   (default "`AlwaysAllow`")
 * `--authorization-policy-file`
-  授权文件
-	File with authorization policy in csv format, used with * `--authorization-mode=ABAC, on the secure port.
+	授权文件
+	File with authorization policy in `csv` format, used with `--authorization-mode=ABAC`, on the secure port.
 
 Admission Control (准入控制)
 * `--admission-control`
@@ -228,10 +228,10 @@ Misc
 * `--authentication-token-webhook-config-file string`
 	File with webhook configuration for token authentication in kubeconfig format. The API server will query the remote service to determine authentication for bearer tokens.
 * `--authorization-mode string`
-	Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. 
+	Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: `AlwaysAllow`,`AlwaysDeny`,`ABAC`,`Webhook`,`RBAC`,`Node`. 
   (default "`AlwaysAllow`")
 * `--authorization-policy-file string`
-	File with authorization policy in csv format, used with * `--authorization-mode=ABAC, on the secure port.
+	File with authorization policy in csv format, used with `--authorization-mode=ABAC`, on the secure port.
 * `--authorization-webhook-cache-authorized-ttl duration`
 	The duration to cache 'authorized' responses from the webhook authorizer. 
   (default `5m0s`)
@@ -248,7 +248,7 @@ Misc
 	The IP address on which to listen for the `--secure-port` port. The associated interface(s) must be reachable by the rest of the cluster, and by CLI/web clients. If blank, all interfaces will be used (0.0.0.0). 
   (default `0.0.0.0`)
 * `--cert-dir string`
-	The directory where the TLS certs are located. If * `--tls-cert-file` and `--tls-private-key-file` are provided, this flag will be ignored. 
+	The directory where the TLS certs are located. If `--tls-cert-file` and `--tls-private-key-file` are provided, this flag will be ignored. 
   (default "`/var/run/kubernetes`")
 * `--client-ca-file string`
 	If set, any request presenting a client certificate signed by one of the authorities in the client-ca-file is authenticated with an identity corresponding to the CommonName of the client certificate.
@@ -272,7 +272,7 @@ Misc
 * `--enable-bootstrap-token-auth`
 	Enable to allow secrets of type '`bootstrap.kubernetes.io/token`' in the 'kube-system' namespace to be used for TLS bootstrapping authentication.
 * `--enable-garbage-collector`
-	Enables the generic garbage collector. MUST be synced with the corresponding flag of the kube-controller-manager. 
+	Enables the generic garbage collector. MUST be synced with the corresponding flag of the `kube-controller-manager`. 
   (default `true`)
 * `--enable-logs-handler`
 	If true, install a /logs handler for the apiserver logs. (default true)
@@ -294,9 +294,9 @@ Misc
 	The prefix to prepend to all resource paths in etcd. 
   (default "`/registry`")
 * `--etcd-servers stringSlice`
-	List of etcd servers to connect with (scheme://ip:port), comma separated.
+	List of etcd servers to connect with (`scheme://ip:port`), comma separated.
 * `--etcd-servers-overrides stringSlice`
-	Per-resource etcd servers overrides, comma separated. The individual override format: group/resource#servers, where servers are `http://ip:port`, semicolon separated.
+	Per-resource etcd servers overrides, comma separated. The individual override format: `group/resource#servers`, where servers are `http://ip:port`, semicolon separated.
 * `--event-ttl duration`
 	Amount of time to retain events. 
   (default `1h0m0s`)
@@ -309,7 +309,7 @@ Misc
 * `--external-hostname string`
 	The hostname to use when generating externalized URLs for this master (e.g. Swagger API Docs).
 * `--feature-gates mapStringBool`
-	A set of key=value pairs that describe feature gates for alpha/experimental features. Options are:
+	A set of key=value pairs that describe feature gates for `alpha/experimental` features. Options are:
 		APIListChunking=true|false (BETA - default=true)
 		APIResponseCompression=true|false (ALPHA - default=false)
 		Accelerators=true|false (ALPHA - default=false)
@@ -350,10 +350,10 @@ Misc
 * `--google-json-key string`
 	The Google Cloud Platform Service Account JSON Key to use for authentication.
 * `--insecure-bind-address ip`
-	The IP address on which to serve the `--insecure-port` (set to 0.0.0.0 for all interfaces). 
+	The IP address on which to serve the `--insecure-port` (set to `0.0.0.0` for all interfaces). 
   (default `127.0.0.1`)
 * `--insecure-port int`
-	The port on which to serve unsecured, unauthenticated access. It is assumed that firewall rules are set up such that this port is not reachable from outside of the cluster and that port 443 on the cluster's public address is proxied to this port. This is performed by nginx in the default setup. 
+	The port on which to serve unsecured, unauthenticated access. It is assumed that firewall rules are set up such that this port is not reachable from outside of the cluster and that port `443` on the cluster's public address is proxied to this port. This is performed by nginx in the default setup. 
   (default `8080`)
 * `--kubelet-certificate-authority string`
 	Path to a cert file for the certificate authority.
@@ -365,7 +365,7 @@ Misc
 	Use https for kubelet connections. 
   (default `true`)
 * `--kubelet-preferred-address-types stringSlice`
-	List of the preferred NodeAddressTypes to use for kubelet connections. 
+	List of the preferred `NodeAddressTypes` to use for kubelet connections. 
   (default `[Hostname,InternalDNS,InternalIP,ExternalDNS,ExternalIP]`)
 * `--kubelet-read-only-port uint`
 	DEPRECATED: kubelet port. 
@@ -389,9 +389,9 @@ Misc
 	An optional field indicating the minimum number of seconds a handler must keep a request open before timing it out. Currently only honored by the watch request handler, which picks a randomized value above this number as the connection timeout, to spread out load. 
   (default `1800`)
 * `--oidc-ca-file string`
-	If set, the OpenID server's certificate will be verified by one of the authorities in the oidc-ca-file, otherwise the host's root CA set will be used.
+	If set, the OpenID server's certificate will be verified by one of the authorities in the oi`dc-ca-file`, otherwise the host's root CA set will be used.
 * `--oidc-client-id string`
-	The client ID for the OpenID Connect client, must be set if oidc-issuer-url is set.
+	The client ID for the OpenID Connect client, must be set if `oidc-issuer-url` is set.
 * `--oidc-groups-claim string`
 	If provided, the name of a custom OpenID Connect claim for specifying user groups. The claim value is expected to be a string or array of strings. This flag is experimental, please see the authentication documentation for further details.
 * `--oidc-groups-prefix string`
@@ -402,9 +402,9 @@ Misc
 	The OpenID claim to use as the user name. Note that claims other than the default ('sub') is not guaranteed to be unique and immutable. This flag is experimental, please see the authentication documentation for further details. 
   (default "`sub`")
 * `--oidc-username-prefix string`
-	If provided, all usernames will be prefixed with this value. If not provided, username claims other than 'email' are prefixed by the issuer URL to avoid clashes. To skip any prefixing, provide the value '-'.
+	If provided, all usernames will be prefixed with this value. If not provided, username claims other than '`email`' are prefixed by the issuer URL to avoid clashes. To skip any prefixing, provide the value '`-`'.
 * `--profiling`
-	Enable profiling via web interface host:port/debug/pprof/ (default true)
+	Enable profiling via web interface `host:port/debug/pprof/` (default `true`)
 * `--proxy-client-cert-file string`
 	Client certificate used to prove the identity of the aggregator or kube-apiserver when it must call out during a request. This includes proxying requests to a user api-server and calling out to webhook admission plugins. It is expected that this cert includes a signature from the CA in the `--requestheader-client-ca-file` flag. That CA is published in the '`extension-apiserver-authentication`' configmap in the kube-system namespace. Components receiving calls from kube-aggregator should use that CA to perform their half of the mutual TLS verification.
 * `--proxy-client-key-file string`
@@ -413,7 +413,7 @@ Misc
 	If true, server will do its best to fix the update request to pass the validation, e.g., setting empty UID in update request to its existing value. This flag can be turned off after we fix all the clients that send malformed updates. 
   (default `true`)
 * `--request-timeout duration`
-	An optional field indicating the duration a handler must keep a request open before timing it out. This is the default request timeout for requests but may be overridden by flags such as * `--min-request-timeout for specific types of requests. 
+	An optional field indicating the duration a handler must keep a request open before timing it out. This is the default request timeout for requests but may be overridden by flags such as `--min-request-timeout` for specific types of requests. 
   (default `1m0s`)
 * `--requestheader-allowed-names stringSlice`
 	List of client certificate common names to allow to provide usernames in headers specified by  `--requestheader-username-headers`. If empty, any client certificate validated by the authorities in `--requestheader-client-ca-file` is allowed.
@@ -447,7 +447,7 @@ Misc
 	The media type to use to store objects in storage. Some resources or storage backends may only support a specific media type and will ignore this setting. 
   (default "`application/vnd.kubernetes.protobuf`")
 * `--storage-versions string`
-	The per-group version to store resources in. Specified in the format "`group1/version1,group2/version2,...`". In the case where objects are moved from one group to the other, you may specify the format "`group1=group2/v1beta1,group3/v1beta1,...`". You only need to pass the groups you wish to change from the defaults. It defaults to a list of preferred versions of all registered groups, which is derived from the KUBE_API_VERSIONS environment variable. 
+	The per-group version to store resources in. Specified in the format "`group1/version1,group2/version2,...`". In the case where objects are moved from one group to the other, you may specify the format "`group1=group2/v1beta1,group3/v1beta1,...`". You only need to pass the groups you wish to change from the defaults. It defaults to a list of preferred versions of all registered groups, which is derived from the `KUBE_API_VERSIONS` environment variable. 
   (default "`admission.k8s.io/v1beta1,admissionregistration.k8s.io/v1beta1,apps/v1beta1,authentication.k8s.io/v1,authorization.k8s.io/v1,autoscaling/v1,batch/v1,certificates.k8s.io/v1beta1,componentconfig/v1alpha1,events.k8s.io/v1beta1,extensions/v1beta1,imagepolicy.k8s.io/v1alpha1,kubeadm.k8s.io/v1alpha1,networking.k8s.io/v1,policy/v1beta1,rbac.authorization.k8s.io/v1,scheduling.k8s.io/v1alpha1,settings.k8s.io/v1alpha1,storage.k8s.io/v1,v1`")
 * `--target-ram-mb int`
 	Memory limit for apiserver in MB (used to configure sizes of caches, etc.)
@@ -469,5 +469,5 @@ Misc
 	Enable watch caching in the apiserver 
   (default `true`)
 * `--watch-cache-sizes stringSlice`
-	List of watch cache sizes for every resource (pods, nodes, etc.), comma separated. The individual override format: resource#size, where size is a number. It takes effect when watch-cache is enabled.
+	List of watch cache sizes for every resource (`pods`, `nodes`, etc.), comma separated. The individual override format: `resource#size`, where size is a number. It takes effect when watch-cache is enabled.
   
