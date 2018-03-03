@@ -41,8 +41,8 @@ skinparam usecase {
   BackgroundColor WhiteSmoke
   BorderColor Silver
 }
-skinparam ActorBorderColor DimGray
-skinparam ActorBackgroundColor WhiteSmoke
+skinparam ActorBorderColor Brown
+skinparam ActorBackgroundColor Cornsilk
 skinparam handwritten true
 
 User <<Human>>
@@ -66,13 +66,16 @@ skinparam activity {
   BorderColor Gray
   StartColor DimGray
   EndColor DimGray
-  BarColor DimGray
+  BarColor Yellow
+  DiamondBorderColor Gray
+  DiamondBackgroundColor WhiteSmoke
 }
+skinparam handwritten true
 
 start
 :ClickServlet.handleRequest();
 :new page;
-if (Page.onSecurityCheck) then (true)
+if (Page.onSecurityCheck) then (true)  
 :Page.onInit();
 if (isForward?) then (no)
 :Process controls;
