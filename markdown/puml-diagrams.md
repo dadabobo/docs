@@ -1,5 +1,11 @@
 ## PlantUML Diagrams
 
+```plantuml
+@startuml
+checkversion
+@enduml
+```
+
 ---
 #### Use Case Diagram
 ```plantuml
@@ -63,58 +69,41 @@ skinparam activity {
   BarColor DimGray
 }
 
-title Activity - Servlet Container
-
-(*) --> "ClickServlet.handleRequest()"
---> "new Page"
-
-if "Page.onSecurityCheck" then
-  ->[true] "Page.onInit()" #Moccasin
-
-  if "isForward?" then
-   ->[no] "Process controls"
-
-   if "continue processing?" then
-     -->[yes] ===RENDERING===
-   else
-     -->[no] ===REDIRECT_CHECK===
-   endif
-
-  else
-   -->[yes] ===RENDERING===
-  endif
-
-  if "is Post?" then
-    -->[yes] "Page.onPost()"
-    --> "Page.onRender()" as render
-    --> ===REDIRECT_CHECK===
-  else
-    -->[no] "Page.onGet()"
-    --> render
-  endif
-
-else
-  -->[false] ===REDIRECT_CHECK===
+start
+:ClickServlet.handleRequest();
+:new page;
+if (Page.onSecurityCheck) then (true)
+:Page.onInit();
+if (isForward?) then (no)
+:Process controls;
+if (continue processing?) then (no)
+stop
 endif
 
-if "Do redirect?" then
- -left->[yes] "redirect request"
- --> ==BEFORE_DESTROY===
-else
- -right->[no] if "Do Forward?" then
-  -->[yes] "Forward request"
-  --> ==BEFORE_DESTROY===
- else
-  -right->[no] "Render page template"
-  ---> ==BEFORE_DESTROY===
- endif
+if (isPost?) then (yes)
+:Page.onPost();
+else (no)
+:Page.onGet();
+endif
+:Page.onRender();
+endif
+else (false)
 endif
 
---> "Page.onDestroy()"
--->(*)
+if (do redirect?) then (yes)
+:redirect process;
+else
+if (do forward?) then (yes)
+:Forward request;
+else (no)
+:Render page template;
+endif
+endif
 
+stop
 @enduml
 ```
+
 
 ---
 #### Sequence Diagram
