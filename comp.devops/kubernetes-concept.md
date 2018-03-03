@@ -1,5 +1,9 @@
-### Kubernete Concept
+### 安全机制
 
+###### 认证
+
+----
+### Kubernete Concept
 ###### Kubernetes核心原理简单总结
 1. kubernetes APIserver
    API通过 apiserver进程提供服务，该进程在master节点上。该进程包括两个端口：本地端口，默认是8080端口和安全端口，默认6443端口；集群内的功能模块通过API server将信息存入Etcd，其他模块通过API server读取这些信息，从而实现模块间的通信。
