@@ -1,6 +1,104 @@
-### 安全机制
+### Kubenetes 安全机制
+###### 证书认证
+```yaml
+## kube-apiserver 参数
+--client-ca-file        = /etc/kubernetes/ssl/ca.pem              # 根证书（客户端CA证书）
+--tls-cert-file         = /etc/kubernetes/ssl/kubernetes.pem      # 服务端私钥
+--tls-private-key-file  = /etc/kubernetes/ssl/kubernetes-key.pem  # 服务端证书
 
-###### 认证
+## kube-apiserver 应用客户端（kubectl）的参数 或 kubeconfig 配置文件参数
+--certificate-authority = /etc/kubernetes/ssl/ca.pem              # 根证书
+--client-certificate    = /etc/kubernetes/ssl/admin.pem           # 客户端证书
+--client-key            = /etc/kubernetes/ssl/admin-key.pem       # 客户端私钥
+
+## kube-apiserver 应用客户端（scheduler）的参数 或 kubeconfig 配置文件参数
+--certificate-authority = /etc/kubernetes/ssl/ca.pem              # 根证书
+--client-certificate    = /etc/kubernetes/ssl/scheduler.pem       # 客户端证书
+--client-key            = /etc/kubernetes/ssl/scheduler-key.pem   # 客户端私钥
+
+
+```
+
+###### Token 认证方式
+```yaml
+## kube-apiserver 参数
+--token-auth-file = /etc/kubernetes/token.csv                     # Token 文件
+
+## Token文件: token.csv 
+#  格式： token,user,uid,"group1,group2" （token,用户名,用户UID,组名-可选）
+9c64d78dbd5afd42316e32d922e2da47,kubelet-bootstrap,10001,"system:kubelet-bootstrap"
+
+## curl 访问方式
+#  HTTP请求中，增加一个Header字段：Authorization，将它的值设置为：Bearer SOMETOKEN
+curl $APISERVER/api --header "Authorization: Bearer 9c64d78dbd5afd42316e32d922e2da47" --insecure
+curl https://192.168.99.91:6443/api --header "Authorization: Bearer 9c64d78dbd5afd42316e32d922e2da47" --insecure
+```
+
+###### 基本认证 Basic auth
+```yaml
+## kube-apiserver 参数
+--basic_auth_file =                                               # 基本认证文件
+
+## 基本认证文件 user.csv
+#  格式： password,user,uid,"group1,group2" （口令,用户名,用户UID,组名-可选）
+password,user,uid,"group1,group2"
+
+## curl 访问方式： 
+#  HTTP请求中，增加一个Header字段：Authorization，将它的值设置为：Basic BASE64ENCODED(USER:PASSWORD)
+upass = base64 "Thomas:Thomas"
+curl $APISERVER/api --header "Authorization: Basic $upass" --insecure
+```
+
+###### 引导Token (Bootstrap Tokens)
+引导Token是动态生成的，存储在kube-system namespace的`Secret`中，用来部署新的 Kubernetes集群。
+
+启动引导令牌是一种简单的持有者令牌（Bearer Token），这种令牌是在新建集群或者在现有集群中添加新加新节点时使用的。 它被设计成能够支持 kubeadm，但是也可以被用在其他 context 中以便用户在不使用 kubeadm 的情况下启动集群。它也被设计成可以通过 RBAC 策略，结合 Kubelet TLS Bootstrapping 系统进行工作。
+
+启动引导令牌被定义成一个特定类型的 secrets(bootstrap.kubernetes.io/token)，并存在于 kube-system 命名空间中。然后这些 secrets 会被 API 服务器上的启动引导的认证器读取。 过期的令牌与 TokenCleaner 会被控制管理器一起清除。令牌也会被用于创建特定 configmap 的签名， 而这个 configmap 会通过启动引导签名控制器在 “discovery” 过程中使用。
+
+启动引导令牌使用 `abcdef.0123456789abcdef` 的形式。更加规范地说，它们必须符合正则表达式 `[a-z0-9]{6}\.[a-z0-9]{16}`。
+令牌的第一部分是 “Token ID” ，它是公共信息。它被用于引用一个用于认证的令牌而不会泄漏令牌的保密部分。 
+第二部分是 “Token Secret”，它应该只能被信任方共享。
+
+使用引导Token需要API Server启动时配置 --experimental-bootstrap-tokenauth ，并且Controller Manager开启TokenCleaner -controllers=*,tokencleaner,bootstrapsigner 。
+在使用kubeadm部署Kubernetes时，kubeadm会自动创建默认token，可通过 kubeadm token list 命令查询。
+
+```
+--enable-bootstrap-token-auth               # 启动引导令牌认证（Bootstrap Tokens）
+```
+
+###### Service Account
+ServiceAccount是Kubernetes自动生成的，并会自动挂载到容器 的 /run/secrets/kubernetes.io/serviceaccount 目录中。
+在认证时，ServiceAccount的用户名格式为 system:serviceaccount:(NAMESPACE): (SERVICEACCOUNT) ，并从属于两个 group： system:serviceaccounts 和 system:serviceaccounts:(NAMESPACE) 。
+
+Service account为Pod中的进程提供身份信息。
+
+当您（真人用户）访问集群（例如使用kubectl命令）时，apiserver 会将您认证为一个特定的 User Account（目前通常是admin，除非您的系统管理员自定义了集群配置）。Pod 容器中的进程也可以与 apiserver 联系。 当它们在联系 apiserver 的时候，它们会被认证为一个特定的 Service Account（例如default）。
+
+
+* `--service-account-key-file=/etc/kubernetes/ssl/ca-key.pem`
+  服务账号文件，包含PEM编码的x509 RSA或ECDSA私钥或公钥的文件，用于验证ServiceAccount令牌。如果未指定则使用 `--tls-private-key-file`。指定的文件可以包含多个键，并且可以使用不同的文件多次指定该标志。
+  File containing PEM-encoded x509 RSA or ECDSA private or public keys, used to verify ServiceAccount tokens. If unspecified,--tls-private-key-file is used. The specified file can contain multiple keys, and the flag can be specified multiple times with different files.
+
+```yaml
+## kube-apiserver
+--enable-bootstrap-token-auth               # 启动引导令牌认证（Bootstrap Tokens）
+
+--service-account-key-file=/etc/kubernetes/ssl/ca-key.pem
+
+##-------------------------------------------------------------------
+## kube-controller-manager
+# 用来对 kube-apiserver 证书进行校验，被用于 Service Account。
+--root-ca-file=/etc/kubernetes/ssl/ca.pem   
+
+# 用于给 Service Account Token 签名的 PEM 编码的 RSA 或 ECDSA 私钥文件。
+--service-account-private-key-file=/etc/kubernetes/ssl/ca-key.pem
+
+# 指定的证书和私钥文件用来签名为 TLS BootStrap 创建的证书和私钥；
+--cluster-signing-cert-file=/etc/kubernetes/ssl/ca.pem
+--cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem
+```
+
 
 ----
 ### Kubernete Concept

@@ -17,20 +17,27 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
 
 三种认证方式：
 * 证书认证: `--client-ca-file`
-* token认证: `--token_auth_file`。token文件包含三列: `token,username,userid`。
-* 基本信息认证： `--basic_auth_file`。文件包含三列：`password,username,userid`。
+* token认证: `--token_auth_file`。token文件至少包含三列: `token,username,userid,"group1,group2"`。
+* 基本信息认证： `--basic_auth_file`。文件包至少含三列：`password,username,userid,"group1,group2"`。
 
 ###### kubernetes认证设置
 kubernetes中，验证用户是否有权限操作api的方式有三种：证书认证，token认证，基本信息认证。
 * 证书认证
-	设置apiserver的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。
+	设置apiserver的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。在证书认证时，其`CN`域用作用户名，而组织机构域`O`则用作`group`名。
+	客户端应用（如 `kubectl`、`kube-scheduler`等）的参数 或 kubeconfig 配置文件参数：
+	- `certificate-authority` 根证书
+	- `client-certificate` 	 客户端证书
+	- `client-key` 					 客户端私钥
+
 * token认证
 	设置apiserver的启动参数：`--token_auth_file=SOMEFILE`，目前使用token还存在争议，而且如果变更了这个文件内容，只有重启apiserver才能使配置生效。
-	token file 的格式包含三列： `token,username,userid`。
+	token file 的格式至少包含三列： `token,username,userid`, 后面是可选的`group`名。
 	当使用token作为验证方式时，在对apiserver的http请求中，增加一个Header字段：`Authorization`，将它的值设置为：`Bearer SOMETOKEN`。
+	`curl $APISERVER/api --header "Authorization: Bearer $token" --insecure`
 * 基本信息认证
-	设置apiserver的启动参数：`--basic_auth_file=SOMEFILE`，如果更改了文件中的密码，只有重新启动apiserver使其重新生效。其文件的基本格式包含三列：`password,username,userid`。
-	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODEDUSER:PASSWORD`.
+	设置apiserver的启动参数：`--basic_auth_file=SOMEFILE`，如果更改了文件中的密码，只有重新启动apiserver使其重新生效。其文件的基本格式至少包含三列：`password,username,userid`,后面是可选的`group`名。
+	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODED(USER:PASSWORD)`.
+	`curl $APISERVER/api --header "Authorization: Basic $BASE64ENCODED(USER:PASSWORD)" --insecure`
 
 ###### API Server 认证权限准入控制
 **HTTP**
@@ -100,6 +107,10 @@ Admission Control (准入控制)
   准入控制配置文件
 
 Misc
+* `--anonymous-auth`
+	允许匿名请求访问secure port。没有被其他authentication方法拒绝的请求即Anonymous requests， 这样的匿名请求的username为`system:anonymous`, 归属的组为`system:unauthenticated`。并且该选线是默认的。这样一来，当采用chrome浏览器访问dashboard UI时很可能无法弹出用户名、密码输入对话框，导致后续authorization失败。为了保证用户名、密码输入对话框的弹出，需要将该选项设置为`false`。
+	Enables anonymous requests to the secure port of the API server. Requests that are not rejected by another authentication method are treated as anonymous requests. Anonymous requests have a username of system:anonymous, and a group name of system:unauthenticated. 
+  (default `true`)
 * `--service-account-key-file stringArray`
   服务账号文件，包含PEM编码的x509 RSA或ECDSA私钥或公钥的文件，用于验证ServiceAccount令牌。如果未指定则使用 `--tls-private-key-file`。指定的文件可以包含多个键，并且可以使用不同的文件多次指定该标志。
   File containing PEM-encoded x509 RSA or ECDSA private or public keys, used to verify ServiceAccount tokens. If unspecified,`--tls-private-key-file` is used. The specified file can contain multiple keys, and the flag can be specified multiple times with different files.
