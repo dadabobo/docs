@@ -2,6 +2,7 @@
 
 ##### Dashboard 访问问题
 [Kubernetes dashboard1.8.0 WebUI安装与配置](http://blog.csdn.net/A632189007/article/details/78840971)
+[Accessing Dashboard](https://github.com/kubernetes/dashboard/wiki/Accessing-Dashboard---1.7.X-and-above)
 
 ###### Dashboard界面
 ```
@@ -34,6 +35,7 @@ Kubernetes API Server新增了`–anonymous-auth`选项，允许匿名请求访�
 ```yaml
 --anonymous-auth=false
 ```
+
 
 ###### Unauthorized问题
 解决了上面那个问题之后，再度访问dashboard页面，发现还是有问题，出现下面这个问题：
