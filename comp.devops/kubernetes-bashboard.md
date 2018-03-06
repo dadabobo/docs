@@ -85,7 +85,6 @@ args:
 ```
 
 
-
 ###### 通过 kubectl proxy 访问 Dashboard
 kubectl proxy在您的机器和Kubernetes API服务器之间创建代理服务器。默认情况下，它只能在本地访问（从启动它的机器）。
 ```bash
