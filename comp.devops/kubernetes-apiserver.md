@@ -1,11 +1,11 @@
-### Kubernetes - apiserver
+## API Server
 Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的api对象的数据。API服务器为REST操作提供服务，并将前端提供给所有其他组件进行交互的集群共享状态。
 * [API Server权限控制方式介绍](https://www.cnblogs.com/fengjian2016/p/8134068.html)
 * [kubernetes如何使用https的webapi](https://segmentfault.com/a/1190000003115642)
 * [使用启动引导令牌（Bootstrap Tokens）认证](https://k8smeetup.github.io/docs/admin/bootstrap-tokens/)
 * [Kubernetes技术分析之安全](http://dockone.io/article/599)
 
-###### 概要
+#### 概要
 两种 apiserver 访问方式： 
 * 本地端口 (HTTP)
 	HTTP; 没有认证和授权检查，主机访问受保护
@@ -20,7 +20,7 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
 * token认证: `--token_auth_file`。token文件至少包含三列: `token,username,userid,"group1,group2"`。
 * 基本信息认证： `--basic_auth_file`。文件包至少含三列：`password,username,userid,"group1,group2"`。
 
-###### kubernetes认证设置
+#### kubernetes认证设置
 kubernetes中，验证用户是否有权限操作api的方式有三种：证书认证，token认证，基本信息认证。
 * 证书认证
 	设置apiserver的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。在证书认证时，其`CN`域用作用户名，而组织机构域`O`则用作`group`名。
@@ -39,8 +39,7 @@ kubernetes中，验证用户是否有权限操作api的方式有三种：证书�
 	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODED(USER:PASSWORD)`.
 	`curl $APISERVER/api --header "Authorization: Basic $BASE64ENCODED(USER:PASSWORD)" --insecure`
 
-###### API Server 认证权限准入控制
-**HTTP**
+#### HTTP
 HTTP服务。在HTTP中没有认证和授权检查，主机访问受保护。
 * `--insecure-bind-address`
 	HTTP 访问的地址（默认本地服务）
@@ -51,7 +50,7 @@ HTTP服务。在HTTP中没有认证和授权检查，主机访问受保护。
 	The port on which to serve unsecured, unauthenticated access. It is assumed that firewall rules are set up such that this port is not reachable from outside of the cluster and that port 443 on the cluster's public address is proxied to this port. This is performed by nginx in the default setup. 
   (default `8080`) 
 
-**HTTPS**
+#### HTTPS
 HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-private-key-file`
 认证方式: 令牌文件或者客户端证书;
 使用基于策略的授权方式；
@@ -74,7 +73,8 @@ HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-priv
   The directory where the TLS certs are located. If `--tls-cert-file` and `--tls-private-key-file` are provided, this flag will be ignored.   
   (default "`/var/run/kubernetes`")
 
-认证 (证书认证、token认证、基本信息认证)
+###### Authentication (认证)
+证书认证、token认证、基本信息认证
 * `--client-ca-file`
 	client证书文件,如果指定，则该客户端证书将被用于认证过程。
 	如果设置，任何呈现由客户端CA文件中的某个权威机构签发的客户端证书的请求都将使用与客户端证书的CommonName相对应的身份进行身份验证。
@@ -88,7 +88,7 @@ HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-priv
 	如果设置，文件将被用于通过http基本身份验证的方式访问API服务器的安全端口。
 	If set, the file that will be used to admit requests to the secure port of the API server via http basic authentication.
 
-Authorization (授权)
+###### Authorization (授权)
 * `--authorization-mode`
   授权模式
 	Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. 
@@ -97,7 +97,7 @@ Authorization (授权)
 	授权文件
 	File with authorization policy in `csv` format, used with `--authorization-mode=ABAC`, on the secure port.
 
-Admission Control (准入控制)
+###### Admission Control (准入控制)
 * `--admission-control`
   准入控制模块列表
   Admission is divided into two phases. In the first phase, only mutating admission plugins run. In the second phase, only validating admission plugins run. The names in the below list may represent a validating plugin, a mutating plugin, or both. Within each phase, the plugins will run in the order in which they are passed to this flag. 
@@ -106,7 +106,7 @@ Admission Control (准入控制)
   File with admission control configuration.
   准入控制配置文件
 
-Misc
+###### Misc
 * `--anonymous-auth`
 	允许匿名请求访问secure port。没有被其他authentication方法拒绝的请求即Anonymous requests， 这样的匿名请求的username为`system:anonymous`, 归属的组为`system:unauthenticated`。并且该选线是默认的。这样一来，当采用chrome浏览器访问dashboard UI时很可能无法弹出用户名、密码输入对话框，导致后续authorization失败。为了保证用户名、密码输入对话框的弹出，需要将该选项设置为`false`。
 	Enables anonymous requests to the secure port of the API server. Requests that are not rejected by another authentication method are treated as anonymous requests. Anonymous requests have a username of system:anonymous, and a group name of system:unauthenticated. 
@@ -115,7 +115,7 @@ Misc
   服务账号文件，包含PEM编码的x509 RSA或ECDSA私钥或公钥的文件，用于验证ServiceAccount令牌。如果未指定则使用 `--tls-private-key-file`。指定的文件可以包含多个键，并且可以使用不同的文件多次指定该标志。
   File containing PEM-encoded x509 RSA or ECDSA private or public keys, used to verify ServiceAccount tokens. If unspecified,`--tls-private-key-file` is used. The specified file can contain multiple keys, and the flag can be specified multiple times with different files.
 
-###### 选项示例
+#### 选项示例
 ```yaml
 ## 必须项 ------------
 --service-cluster-ip-range=10.254.0.0/16    # service 要使用的网段，使用 CIDR 格式，参考 service 的定义
@@ -160,28 +160,15 @@ Misc
 --audit-log-maxsize=100                     # 日志文件最大大小（单位MB）
 ```
 
-
-```bash
+```yaml
 ## 如通过 https 连接 etcd server
 --etcd-cafile=/etc/kubernetes/ssl/ca.pem
 --etcd-certfile=/etc/kubernetes/ssl/kubernetes.pem
 --etcd-keyfile=/etc/kubernetes/ssl/kubernetes-key.pem
 --etcd-servers=https://192.168.99.91:2379,https://192.168.99.92:2379
-
-## apiserver的启动参数中加入：
---admission_control=ServiceAccount
-  # k8s会给每个namespace都设置至少一个secret，secret作为一个存储介质，可以存储证书，token，甚至配置文件
---client_ca_file=/var/run/kubernetes/ca.crt
-  # 每个namespace的默认的secret中都会记录ca.crt 
---tls-private-key-file=/var/run/kubernetes/server.key 
---tls-cert-file=/var/run/kubernetes/server.crt
-
-## controller-manager的启动参数中加入：
---service_account_private_key_file=/var/run/kubernetes/server.key
---root-ca-file="/var/run/kubernetes/ca.crt" 
 ```
 
-###### 命令选项
+#### 命令选项
 * `--admission-control stringSlice`
 	Admission is divided into two phases. In the first phase, only mutating admission plugins run. In the second phase, only validating admission plugins run. The names in the below list may represent a validating plugin, a mutating plugin, or both. Within each phase, the plugins will run in the order in which they are passed to this flag. Comma-delimited list of: `AlwaysAdmit`, `AlwaysDeny`, `AlwaysPullImages`, `DefaultStorageClass`, `DefaultTolerationSeconds`, `DenyEscalatingExec`, `DenyExecOnPrivileged`, `EventRateLimit`, `ExtendedResourceToleration`, `ImagePolicyWebhook`, `InitialResources`, `Initializers`, `LimitPodHardAntiAffinityTopology`, `LimitRanger`, `MutatingAdmissionWebhook`, `NamespaceAutoProvision`, `NamespaceExists`, `NamespaceLifecycle`, `NodeRestriction`, `OwnerReferencesPermissionEnforcement`, `PVCProtection`, `PersistentVolumeClaimResize`, `PersistentVolumeLabel`, `PodNodeSelector`, `PodPreset`, `PodSecurityPolicy`, `PodTolerationRestriction`, `Priority`, `ResourceQuota`, `SecurityContextDeny`, `ServiceAccount`, `ValidatingAdmissionWebhook`.
   (default [`AlwaysAdmit`])

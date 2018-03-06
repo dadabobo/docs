@@ -1,10 +1,10 @@
-### Kubernetes - scheduler
+## Scheduler
 Kubernetes scheduler 是一项策略丰富的拓扑感知工作负载特定功能，可显着影响可用性，性能和容量。调度程序需要考虑个人和集体资源需求，服务质量要求，硬件/软件/政策约束，亲和力和反亲和力规范，数据位置，工作负载间干扰，截止日期等。必要时，工作负载特定的要求将通过API公开。
 
-###### 概要
+#### 概要
 kube-scheduler负责分配调度Pod到集群内的节点上，它监听kube-apiserver，查询还未分配Node的Pod，然后根据调度策略为这些Pod分配节点（更新Pod的 NodeName 字 段）。
 
-###### 常用选项
+#### 常用选项
 * `--master`
   Kubernetes master apiserver 地址
   The address of the Kubernetes API server (overrides any value in kubeconfig)
@@ -21,7 +21,7 @@ kube-scheduler负责分配调度Pod到集群内的节点上，它监听kube-apis
   Path to kubeconfig file with authorization and master location information.
 
 
-###### 选项示例
+#### 选项示例
 ```yaml
 --logtostderr=true                          # 输出到 `stderr`,不输到日志文件。
 --v=0                                       # 日志级别
@@ -31,7 +31,7 @@ kube-scheduler负责分配调度Pod到集群内的节点上，它监听kube-apis
 --kubeconfig=/etc/kubernetes/scheduler.conf # kubeconfig 配置文件，在配置文件中包含 master 地址信息和必要的认证信息
 ```
 
-###### 命令选项
+#### 命令选项
 * `--address string`
   The IP address to serve on (set to 0.0.0.0 for all interfaces)
 * `--algorithm-provider string`

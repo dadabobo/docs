@@ -1,4 +1,4 @@
-### Kubernetets - kubectl
+## Kubectl
 [Overview of kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
 
 Kubernetes 命令行工具 `kubectl`, 用它将 API server 的 API 包装成简单的命令集供我们使用.
@@ -19,7 +19,7 @@ kubectl run             # 在集群中运行一个独立的镜像
 kubectl scale           # 调节 Replication Controller 副本数量
 ```
 
-###### kubectl commmand options
+#### kubectl commmand options
 kubectl [command] [options]
 * `annotate`
   `kubectl annotate (-f FILENAME | TYPE NAME | TYPE/NAME) KEY_1=VAL_1 ... KEY_N=VAL_N [--overwrite] [--all] [--resource-version=version] [flags]`	
@@ -100,7 +100,7 @@ kubectl [command] [options]
   `kubectl version [--client] [flags]`
   Display the Kubernetes version running on the client and server.
 
-###### kubectl -help
+#### kubectl -help
 kubectl controls the Kubernetes cluster manager. 
 Find more information at https://github.com/kubernetes/kubernetes.
 
@@ -201,7 +201,7 @@ Other Commands:
   Print the client and server version information
 
 
-######  Kubectl 自动补全
+####  Kubectl 自动补全
 ```bash
 # setup autocomplete in bash, bash-completion package should be installed first.
 source <(kubectl completion bash)
@@ -209,7 +209,7 @@ source <(kubectl completion bash)
 source <(kubectl completion zsh) 
 ```
 
-###### 常用命令
+#### 常用命令
 ```bash
 kubectl get namespace
 
@@ -221,7 +221,7 @@ kubectl describe po coredns-xxxx --namespace=kube-system
 kubectl logs coredns-xxxx --namespace=kube-system
 ```
 
-###### Kubectl 上下文和配置
+#### Kubectl 上下文和配置
 设置 kubectl 命令交互的 kubernetes 集群并修改配置信息。
 ```bash
 $ kubectl config view # 显示合并后的 kubeconfig 配置
@@ -245,7 +245,7 @@ $ kubectl config set-context gce --user=cluster-admin --namespace=foo \
 
 
 
-###### Kubernetes 对象管理
+#### Kubernetes 对象管理
 [Kubernetes Object Management](https://kubernetes.io/docs/concepts/overview/object-management-kubectl/overview/)
 `kubectl` 命令行工具支持多种不同的方法来创建和管理Kubernetes对象。
 * 命令式命令

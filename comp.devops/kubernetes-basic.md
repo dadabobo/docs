@@ -1,7 +1,7 @@
-### Kubernetes basic
+## Kubernetes basic
 入门操作
 
-##### Create a Kubernetes cluster
+#### Create a Kubernetes cluster
 ```bash
 ## 创建集群
 minikube version 
@@ -13,7 +13,7 @@ kubectl get nodes
 minikube dashboard
 ```
 
-##### Deploy an app
+#### Deploy an app
 ```bash
 kubectl run kubernetes-bootcamp --image=docker.io/jocatalin/kubernetes-bootcamp:v1 --port=8080
 kubectl get deployments
@@ -22,7 +22,7 @@ curl http://localhost:8001/version
 curl http://localhost:8001/api/v1/proxy/namespaces/default/pods/$POD_NAME/
 ```
 
-##### Explore your app
+#### Explore your app
 ```bash
 kubectl describe nodes
 kubectl logs $POD_NAME
@@ -33,7 +33,7 @@ $ curl localhost:8080
 $ exit
 ```
 
-##### Expose your app publicly 
+#### Expose your app publicly 
 ```bash
 kubectl get nodes
 kubectl get services
@@ -55,7 +55,7 @@ curl $MINIKUBE_IP:$NODE_PORT
 kubectl exec -ti $POD_NAME curl localhost:8080
 ```
 
-###### Scale up your app
+#### Scale up your app
 ```bash
 kubectl get deployments
 kubectl scale deployments/kubernetes-bootcamp --replicas=4
@@ -69,7 +69,7 @@ kubectl get deployments
 kubectl get pods -o wide
 ```
 
-##### Update your app
+#### Update your app
 ```bash
 kubectl get deployments
 kubectl get pods

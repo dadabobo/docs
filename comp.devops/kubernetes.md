@@ -1,5 +1,4 @@
-
-## Kubernetes
+# Kubernetes
 ---
 @import "./kubernetes-apiserver.md"
 
@@ -23,6 +22,15 @@
 
 
 @import "./kubernetes-kubespray.md"
+
+---
+@import "./kubernetes-authentication.md"
+
+---
+@import "./kubernetes-kubeconfig.md"
+
+---
+@import "./kubernetes-security.md"
 
 ---
 @import "./kubernetes-concept.md"

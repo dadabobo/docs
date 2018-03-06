@@ -1,16 +1,16 @@
-### Kubernetes Tricks
+## Kubernetes Tricks
 
-##### Dashboard 访问问题
+#### Dashboard 访问问题
 [Kubernetes dashboard1.8.0 WebUI安装与配置](http://blog.csdn.net/A632189007/article/details/78840971)
 [Accessing Dashboard](https://github.com/kubernetes/dashboard/wiki/Accessing-Dashboard---1.7.X-and-above)
 
-###### Dashboard界面
+#### Dashboard界面
 ```
 https://masterip:6443/ui 
 https://MasterIP:6443/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 ```
 
-###### Dashboard system:anonymous问题
+#### Dashboard system:anonymous问题
 访问dashboard网页时，可能出现下面这种报错：
 ```
 {
@@ -37,7 +37,7 @@ Kubernetes API Server新增了`–anonymous-auth`选项，允许匿名请求访�
 ```
 
 
-###### Unauthorized问题
+#### Unauthorized问题
 解决了上面那个问题之后，再度访问dashboard页面，发现还是有问题，出现下面这个问题：
 新建 `/etc/kubernetes/basic_auth_file` 文件，并在其中添加：
 ```

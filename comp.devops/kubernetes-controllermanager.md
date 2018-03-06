@@ -1,14 +1,14 @@
-### Kubernetes - Controller Manager
+## Controller Manager
 Kubernetes controller manager 是嵌入了Kubernetes核心控制环的守护进程。在机器人和自动化应用中，控制回路是一个调节系统状态的非终止回路。在Kubernetes中，控制器是一个控制循环，通过apiserver监视集群的共享状态，并进行更改，尝试将当前状态移动到所需的状态。Kubernetes今天发布的控制器示例包括复制控制器，端点控制器，名称空间控制器和serviceaccounts控制器。
 
-###### 概要
+#### 概要
 Controller Manager由kube-controller-manager和cloud-controller-manager组成，是 Kubernetes的大脑，它通过apiserver监控整个集群的状态，并确保集群处于预期的工作状态。
 kube-controller-manager由一系列的控制器组成。
 cloud-controller-manager在Kubernetes启用Cloud Provider的时候才需要，用来配合云 服务提供商的控制，也包括一系列的控制器。
 
 Controller manager metrics提供了控制器内部逻辑的性能度量，如Go语言运行时度量、etcd请求延时、云服务商API请求延时、云存储请求延时等。Controller manager metrics默认监听在 kube-controller-manager 的`10252`端口，提供Prometheus格式的性能度量数据，可以通过 `http://localhost:10252/metrics` 来访问。
 
-###### 常用选项
+#### 常用选项
 * `--service-cluster-ip-range` 
 	指定 Cluster 中 Service 的CIDR范围，该网络在各 Node 间必须路由不可达，必须和 `kube-apiserver` 中的参数一致；
 	CIDR Range for Services in cluster. Requires `--allocate-node-cidrs` to be true
@@ -38,7 +38,7 @@ Controller manager metrics提供了控制器内部逻辑的性能度量，如Go�
 	用于给 Service Account Token 签名的 PEM 编码的 RSA 或 ECDSA 私钥文件。
 	Filename containing a PEM-encoded private RSA or ECDSA key used to sign service account tokens.
 
-###### 选项示例
+#### 选项示例
 ```yaml
 --logtostderr=true                          # 输出到 `stderr`,不输到日志文件。
 --v=0                                       # 日志级别
@@ -58,8 +58,7 @@ Controller manager metrics提供了控制器内部逻辑的性能度量，如Go�
 --cluster-signing-key-file=/etc/kubernetes/ssl/ca-key.pem
 ```
 
-
-###### 命令选项
+#### 命令选项
 * `--address ip`
 	The IP address to serve on (set to 0.0.0.0 for all interfaces) 
   (default `0.0.0.0`)

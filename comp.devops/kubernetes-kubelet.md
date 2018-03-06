@@ -1,4 +1,4 @@
-### Kubernetets - kubelet
+## Kubelet
 [kubelet](https://kubernetes.io/docs/reference/generated/kubelet/)
 
 kubelet的主要功能就是定时从某个地方获取节点上 pod/container 的期望状态（运行什么容器、运行的副本数量、网络或者存储如何配置等等），并调用对应的容器平台接口达到这个状态。
@@ -12,10 +12,10 @@ Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作
 * HTTP端点：HTTP端点作为命令行上的参数传递。该端点每20秒检查一次（也可用标志配置）。
 * HTTP服务器：kubelet还可以侦听HTTP并响应一个简单的API（当前未指定）提交新的清单。
 
-###### 概要
+#### 概要
 每个节点上都运行一个kubelet服务进程，默认监听`10250`端口，接收并执行master发来的指令，管理Pod及Pod中的容器。每个kubelet进程会在API Server上注册节点自身信息，定期向master节点汇报节点的资源使用情况，并通过cAdvisor监控节点和容器的资源。
 
-###### 常用选项
+#### 常用选项
 * `--address IP`
   kubelet 服务监听的地址 (默认: `0.0.0.0`)
   `--address` 不能设置为 `127.0.0.1`，否则后续 Pods 访问 kubelet 的 API 接口时会失败，因为 Pods 访问的 `127.0.0.1` 指向自己而不是 kubelet；
@@ -96,7 +96,7 @@ Kubelet是在每个节点上运行的主要“节点代理”。Kubelet的工作
   Pull images one at a time. We recommend not changing the default value on nodes that run docker daemon with version `< 1.9` or an Aufs storage backend. Issue #10959 has more details.
   (default true)
 
-###### 示例
+#### 示例
 master
 ```yaml
 - name: kube-kubelet.service
@@ -166,7 +166,9 @@ master
   File containing x509 private key matching `--tls-cert-file`.
 
 如果使用systemd方式启动，则需要额外增加两个参数 --runtimecgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice
-###### 选项示例
+
+
+#### 选项示例
 ```yaml
 --logtostderr=true                          # 输出到 `stderr`,不输到日志文件。
 --v=0                                       # 日志级别
@@ -196,7 +198,7 @@ master
 # $KUBELET_PORT="--port=10250"
 ```
 
-###### 主要功能
+#### 主要功能
 * pod 管理
   在 kubernetes 的设计中，最基本的管理单位是 pod，而不是 container。pod 是 kubernetes 在容器上的一层封装，由一组运行在同一主机的一个或者多个容器组成。
 * 容器健康检查
@@ -226,7 +228,7 @@ master
   kubelet 使用cAdvisor进行资源使用率的监控。
 
 
-###### 命令选项
+#### 命令选项
 * `--address ip`
   The IP address for the Kubelet to serve on (set to 0.0.0.0 for all interfaces) 
   (default `0.0.0.0`)

@@ -1,7 +1,7 @@
-### Kubernetets - proxy
+## Proxy
 Kubernetes 网络 proxy 在每个节点上运行。这反映了每个节点上Kubernetes API中定义的服务，并且可以通过一组后端进行简单的TCP和UDP流转发或循环TCP和UDP转发。服务集群IP和端口通过由服务代理打开的由Docker-links-compatible 环境变量指定的端口找到。有一个可选的插件为这些集群IP提供集群DNS。用户必须使用apiserver API创建服务来配置代理。
 
-###### 概要
+#### 概要
 每台机器上都运行一个kube-proxy服务，它监听API server中service和endpoint的变化情况，并通过iptables等来为服务配置负载均衡（仅支持TCP和UDP）。
 kube-proxy可以直接运行在物理机上，也可以以static pod或者daemonset的方式运行。
 
@@ -13,7 +13,7 @@ kube-proxy当前支持一下几种实现:
 另外，基于ipvs的方案正在讨论中，大规模情况下可以大幅提升性能，比如slide里面提供的示例将服务延迟从小时缩短到毫秒级。
 
 
-###### 常用选项
+#### 常用选项
 * `--master string`
   Kubernetes master apiserver 地址
   The address of the Kubernetes API server (overrides any value in kubeconfig)
@@ -32,7 +32,7 @@ kube-proxy当前支持一下几种实现:
   The IP address for the proxy server to serve on (set to `0.0.0.0` for all interfaces) 
 
 
-###### 选项示例
+#### 选项示例
 ```yaml
 --logtostderr=true                          # 输出到 `stderr`,不输到日志文件。
 --v=0                                       # 日志级别
@@ -45,7 +45,7 @@ kube-proxy当前支持一下几种实现:
 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig 
 ```
 
-###### 命令选项
+#### 命令选项
 * `--azure-container-registry-config string`
 	Path to the file container Azure container registry configuration information.
 * `--bind-address ip`
