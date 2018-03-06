@@ -1,7 +1,15 @@
+---
+html:
+  embed_local_images: true
+  embed_svg: true
+  offline: false
+  toc: Ansible
+print_background: false
+---
 
 ## Mesos
 
-##### Mesos 架构
+#### Mesos 架构
 ![Mesos](./img/mesosphere/mesos.png)
 
 Mesos实现了**两级调度架构**，它可以管理多种类型的应用程序。
@@ -12,7 +20,7 @@ Mesos能和不同类型的Framework通信，每种Framework由相应的应用集
 
 Mesos Master协调全部的Slave，并确定每个节点的可用资源，聚合计算跨节点的所有可用资源的报告，然后向注册到Master的Framework（作为Master的客户端）发出资源邀约。Framework可以根据应用程序的需求，选择接受或拒绝来自master的资源邀约。一旦接受邀约，Master即协调Framework和Slave，调度参与节点上任务，并在容器中执行，以使多种类型的任务，比如Hadoop和Cassandra，可以在同一个节点上同时运行。
 
-##### Mesos流程
+#### Mesos流程
 ![Mesos](./img/mesosphere/mesos001.png)
 
 Slave是运行在物理或虚拟服务器上的Mesos守护进程，是Mesos集群的一部分。Framework由调度器（Scheduler）应用程序和任务执行器（Executor）组成，被注册到Mesos以使用Mesos集群中的资源。
@@ -22,7 +30,7 @@ Slave是运行在物理或虚拟服务器上的Mesos守护进程，是Mesos集�
 4. 最后，**Master** 向 **Slave** 下发任务，分配适当的资源给 **Framework** 的任务执行器（Executor）,接下来由执行器启动这两个任务（如图中虚线框所示）。 此时，还有`1个CPU和1GB的RAM`尚未分配，因此分配模块可以将这些资源供给 **Framework 2**。
 
 
-##### 基于Mesos 构建的软件项目
+#### 基于Mesos 构建的软件项目
 * DevOps 工具： Vamp
 * 长期运行服务：Aurora, Marathon, Singularity, SSSP
 * 大数据处理：Cray Chapel, Dpark, Exelixi, Flink, Hadoop, Hama, MPI, Spark, Storm
@@ -92,18 +100,18 @@ DC/OS集群由三种类型的节点组成：**主节点**，**私有代理节点
 ##### 网络 Networking
 
 
-### Misc
+## Misc
 
-##### DCOS 之架构
+#### DCOS 之架构
 ![mesosphere-001](./img/mesosphere/mesosphere-001.png)
 
 * 用户空间包括 System Components 和 Services
 * 内核空间包括 Mesos Masters 和 Mesos Agents ( Mesos container 和 Docker )
 
-##### DCOS 之功能
+#### DCOS 之功能
 ![mesosphere-002](./img/mesosphere/mesosphere-002.png)
 DCOS 以开源技术 Mesos，Docker，Marathon 为引擎，在其上开发了 DCOS 控制台、监控管理模块、弹性扩缩容调度模块、统一日志模块、资源配置模块、鉴权模块、持续集成平台等。
 
-##### DC/OS 安全
+#### DC/OS 安全
 ![mesosphere-003](./img/mesosphere/mesosphere-003.png)
 

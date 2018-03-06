@@ -1,3 +1,12 @@
+---
+html:
+  embed_local_images: true
+  embed_svg: true
+  offline: false
+  toc: Ansible
+print_background: false
+---
+
 ## Kubernetes Dashboard
 * [Kubernetes Dashboard中的身份认证详解](https://jimmysong.io/posts/kubernetes-dashboard-upgrade/)
 * [Kubernetes dashboard1.8.0 WebUI安装与配置](http://blog.csdn.net/A632189007/article/details/78840971)
@@ -11,9 +20,9 @@ Dashboard 默认未部署，使用以下命令部署：
 
 #### 概要
 访问 Dashboard 有以下三种方式：
-* kubernetes-dashboard 服务暴露了 NodePort，可以使用 `http://NodeIP:NodePort` 地址访问 dashboard
+* kubernetes-dashboard 服务暴露了 `NodePort`，可以使用 `http://NodeIP:NodePort` 地址访问 dashboard
   只有在单个节点设置中的开发环境中才推荐这种访问仪表板的方式。
-* 通过 API server 访问 dashboard（https 6443 端口 和 http 8080端口方式）
+* 通过 API server 访问 dashboard（https `6443` 端口 和 http `8080` 端口方式）
   `http://<kubernetes-master>/ui`
   `https://<kubernetes-master>/ui`
 * 通过 kubectl proxy 访问 dashboard
@@ -31,10 +40,10 @@ kubernetes dashboard 服务暴露了 `NodePort`，可以使用 `http://NodeIP:No
 只有在单个节点设置中的开发环境中才推荐这种访问仪表板的方式。
 
 Service有四种类型：
-* ClusterIP：默认类型，自动分配一个仅cluster内部可以访问的虚拟IP 
-* NodePort：在ClusterIP基础上为Service在每台机器上绑定一个端口，这样就可以通过 `<NodeIP>:NodePort` 来访问该服务
-* LoadBalancer：在NodePort的基础上，借助cloud provider创建一个外部的负载均衡器，并将请求转发到 `<NodeIP>:NodePort` 
-* ExternalName：将服务通过DNS CNAME记录方式转发到指定的域名（通过 `spec.externlName` 设定）。需要kube-dns版本在1.7以上。
+* `ClusterIP`：默认类型，自动分配一个仅cluster内部可以访问的虚拟IP 
+* `NodePort`：在ClusterIP基础上为Service在每台机器上绑定一个端口，这样就可以通过 `<NodeIP>:NodePort` 来访问该服务
+* `LoadBalancer`：在NodePort的基础上，借助cloud provider创建一个外部的负载均衡器，并将请求转发到 `<NodeIP>:NodePort` 
+* `ExternalName`：将服务通过DNS CNAME记录方式转发到指定的域名（通过 `spec.externlName` 设定）。需要kube-dns版本在1.7以上。
 
 ```yaml
 # 默认
@@ -85,7 +94,7 @@ args:
 ```
 
 
-###### 通过 kubectl proxy 访问 Dashboard
+#### 通过 kubectl proxy 访问 Dashboard
 kubectl proxy在您的机器和Kubernetes API服务器之间创建代理服务器。默认情况下，它只能在本地访问（从启动它的机器）。
 ```bash
 ## 启动本地代理服务器： 127.0.0.1:8001
@@ -98,7 +107,7 @@ kubectl proxy --address='192.168.99.91' --port=8086 --accept-hosts='^*$'
 ```
 
 
-### 创建示例账户
+#### 创建示例账户
 [Creating sample user](https://github.com/kubernetes/dashboard/wiki/Creating-sample-user)
 在本指南中，我们将了解如何使用Kubernetes的服务帐户机制创建新用户，授予此用户管理权限并使用与此用户绑定的不记名令牌登录到仪表板。
 
@@ -136,8 +145,6 @@ subjects:
 `kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')`
 
 
-### 身份认证
-
 ###### RBAC
 ```yaml
 # ------------------- Dashboard Service Account ------------------- #
@@ -167,7 +174,7 @@ subjects:
 ```
 
 
-###### kubernetes-dashboard.yaml
+#### kubernetes-dashboard.yaml
 * `spec.containers.args`
   填写 `- --auto-generate-certificates`，用以自动生成dashboard证书，此处不需要填写apiserver地址。
   Uncomment the following line to manually specify Kubernetes API server Host If not specified, Dashboard will attempt to auto discover the API server and connect to it. Uncomment only if the default does not work.

@@ -1,6 +1,15 @@
-# Ansible
+---
+html:
+  embed_local_images: true
+  embed_svg: true
+  offline: false
+  toc: Ansible
 
-参考资料
+print_background: false
+---
+# Ansible
+## Preface
+###### 参考资料
 * [Ansible](http://www.ansible.com/)
 * [Ansible中文权威指南](http://www.ansible.com.cn/)
 * [Ansible_Up-And-Running笔记](http://www.jianshu.com/p/f0cf027225df?hmsr=toutiao.io)
@@ -10,8 +19,7 @@
 * [Ansible简介](http://www.ansible.cn/thread-7-1-1.html)
 * [Ansible完整基础简介](http://chuansong.me/n/1428806851433)
 
-
-内容
+###### 内容
 * [概要](#summary)
 * [ssh公钥认证](#sshca)
 * [Ansible命令语法](#command)
@@ -26,17 +34,16 @@
 ---
 <span id="summary"></span>
 ## 概要
-
-**ansible命令**
+###### ansible命令
 ```
 ansible <host-pattern> [-f forks] [-m module_name] [-a args]
 ```
 
-**ansible palybook**  
+###### ansible palybook  
 `development.yml` -- 基于role配置开发环境  
 `ansible-playbook development.yml`
 
-**ssh 设置**
+###### ssh 设置
 ```
 ssh-keygen
 ssh-copy-id root@目标节点IP
@@ -46,13 +53,13 @@ ansible -m ping all
 ssh-copy-id vagrant@localhost
 ```
 
-**配置文件读取的顺序**  
+###### 配置文件读取的顺序  
 * `ANSIBLE_CONFIG` (一个环境变量)
 * `ansible.cfg` (位于当前目录中)
 * `.ansible.cfg` (位于家目录中)
 * `/etc/ansible/ansible.cfg`
 
-**Inventory**
+###### Inventory
 * 缺省： `/etc/ansible/hosts`
 * 可以使用 `-i <path>` 命令选项指定路径
 * 可以在 `ansible.cfg` 中定义
@@ -61,7 +68,7 @@ ssh-copy-id vagrant@localhost
 inventory      = /data/ansible/inventory
 ```
 
-**ansible.cfg**
+###### ansible.cfg
 缺省的配置 (`/etc/ansible/ansible.cfg`)
 ```
 [persistent_connection]
@@ -70,27 +77,25 @@ connect_retries = 30
 connect_interval = 1
 ```
 
-
-#### 常用命令
-
+###### 常用命令
 使用Facts获取信息  
 `ansible hostname -m setup`
 
 <span id="sshca"></span>
 ## ssh公钥认证
-ssh 公钥认证 原理
+#### ssh 公钥认证 原理
 * 在 **控制主机** 创建SSH认证文件  
   `ssh-keygen` 生成 `is_rsa` 和 `id_rsa.pub`
 * 将 **控制主机** 的公钥文件 `id_rsa.pub` 添加到 **被控制主机** 的 `~/.ssh/authorized_keys`。
 
 #### 分发ssh登陆认证公钥
-**方式一** `ssh-copy-id`  
+方式一： `ssh-copy-id`  
 ```bash
 ssh-copy-id username@remote   
 ansible -m ping test
 ```
 
-**方式二** `ansible copy/shell`    
+方式二： `ansible copy/shell`    
 ```bash
 ## 将 公钥文件 分发到 远程主机  
 ansible test -m copy -a "src=/home/vagrant/.ssh/id_rsa.pub dest=/tmp/id_rsa.pub" --ask-pass
@@ -99,10 +104,10 @@ ansible test -m shell -a "cat /tmp/id_rsa.pub >> /home/vagrant/.ssh/authorized_k
 ansible -m ping test
 ```
 
-**方式三** `ansible authorized_key`   
+方式三： `ansible authorized_key`   
 `ansible test -m authorized_key -a "user=vagrant key='{{ lookup('file', '/home/vagrant/.ssh/id_rsa.pub') }}' path=/home/vagrant/.ssh/authorized_keys manage_dir=no" --ask-pass -c paramiko`
 
-#### 使用 ansible-playbook 分发 ssh key
+#### 使用 playbook 分发 ssh key
 sshca_hosts
 ```bash
 # hosts
@@ -124,7 +129,6 @@ ansible_connection=ssh
 ansible_user=vagrant
 ansible_ssh_pass="vagrant"
 ```
-
 
 roles/wangwg2.sshca/defaults/main.yml
 ```yaml
@@ -160,16 +164,12 @@ sshca_pbk.yml
   roles:
     - wangwg2.sshpubkey
 ```
-
 运行: `ansible-playbook -i ./sshca_hosts sshca_pbk`
 
 
-
 <span id="command"></span>
-
 ## Ansible命令语法
 Usage: `ansible <host-pattern> [options]`
-
 ```
 Options:
   -a MODULE_ARGS, --args=MODULE_ARGS
@@ -217,8 +217,8 @@ Options:
   --version             show program's version number and exit
 ```
 
-Connection Options:
-  control as whom and how to connect to hosts  
+###### Connection Options:
+control as whom and how to connect to hosts  
 ```
 -k, --ask-pass      ask for connection password
 --private-key=PRIVATE_KEY_FILE, --key-file=PRIVATE_KEY_FILE
@@ -242,8 +242,8 @@ Connection Options:
                     specify extra arguments to pass to ssh only (e.g. -R)
 ```
 
-Privilege Escalation Options:
-  control how and which user you become as on target hosts
+###### Privilege Escalation Options:
+control how and which user you become as on target hosts
 ```
 -s, --sudo          run operations with sudo (nopasswd) (deprecated, use
                     become)
@@ -268,8 +268,8 @@ Privilege Escalation Options:
                     ask for privilege escalation password
 ```
 
-**Ansible 命令**
-  `ansible <host-pattern> [-f forks] [-m module_name] [-a args]`
+###### Ansible 命令
+`ansible <host-pattern> [-f forks] [-m module_name] [-a args]`
 
 常用模块说明
 * `command` - 命令模块：这也是默认的模块，也就是不加-m指定模块时默认的模块，这个模块不能使用包含管道的命令。
@@ -280,13 +280,10 @@ Privilege Escalation Options:
 * `service` - service模块
 
 
-
-
 ---
 <span id="getstart"></span>
-## Ansible简介
-
-Ansible简介
+## Ansible 简介
+###### Ansible 介绍
 * 大部分服务器自动化及流程解决方案，例如Puppet与Chef，都依赖于特定方案编码、Web UI以及命令行工具等要素的综合体，从而使整套体系正常运转。Ansible则有所不同。尽管也能够支持Web UI，Ansible在Unix管理员的监管范围内同样作用良好，即使用大量通用脚本以及命令行机制。
 * Ansible是一款极为灵活的开源工具套件，能够大大简化Unix管理员的自动化配置管理与流程控制方式。它利用推送方式对客户系统加以配置，这样所有工作都可在主服务器端完成。其命令行机制同样非常强大，允许大家利用商业许可Web UI实现授权管理与配置。
 * Ansible是一个综合的强大的管理工具,他可以对多台主机安装操作系统,并为这些主机安装不同的应用程序,也可以通知指挥这些主机完成不同的任务.查看多台主机的各种信息的状态等,Ansible都可以通过模块的方式来完成。
@@ -298,7 +295,7 @@ Ansible是新出现的自动化运维工具，基于Python开发，集合了众�
 * 借助于插件完成记录日志邮件等功能；
 * playbook：剧本执行多个任务时，非必需可以让节点一次性运行多个任务。
 
-Ansible特性
+###### Ansible 特性
 * No agents：不需要再被管理节点上安装客户端，只要有sshd即可
 * No server：在服务端不需要启动任何服务，只需要执行命令就行
 * No additional PKI：由于不基于ssl，所以也不基于PKI工作
@@ -316,8 +313,7 @@ Ansible 优点
 
 <span id="ansible-architechture"></span>
 ## Ansible架构
-
-Ansible Architecture   
+#### Ansible Architecture   
 !["ansible-architechture"](img/ansible-architechture.png "ansible-architechture")
 
 Ansible由5个部分组成：
@@ -368,7 +364,6 @@ Ansible执行任务，这5部分组件相互调用关系如图所示：
 
 使用者使用`Ansible`或`Ansible-playbook`（会额外读取Playbook文件）时，在服务器终端输入Ansible的Ad-Hoc命令集或Playbook后，Ansible会遵循预先编排的规则将`Playbooks`逐条拆解为`Play`，再将`Play`组织成Ansible可识别的任务（`Task`），随后调用任务涉及的所有模块（`Module`）和插件（`Plugin`），根据`Inventory`中定义的主机列表通过`SSH`（Linux默认）将任务集以临时文件或命令的形式传输到远程客户端执行并返回执行结果，如果是临时文件则执行完毕后自动删除。
 
-
 #### Ansible通信发展史
 Ansible主推的卖点是其无需任何Daemon维护进程即可实现相互间的通信，且通信方式是基于业内统一标准的安全可靠的SSH安全连接，同时因为SSH是每台Linux主机系统必装的软件，所以Ansible无需在远程主机端安装任何额外进程，从而实现Agentless（无客户端），既而助力其实现去中心化的思想。尽管稳定、快速、安全的SSH连接是Ansible通信能力的核心，但SSH的连接效率一直被诟病，所以Ansible的通信方式和效率在过去的数年也在不停地改变和提高。基于以上认识，我们先来了解Ansible SSH的工作机制，再来回顾其发展史。
 
@@ -388,10 +383,7 @@ Ansible底层基于安全可靠的SSH协议通信，但一直诟病于其效率�
   Ansible 1.5+版本中的OpenSSH有了非常大的改进，旧版本中实现方式是复制文件至远程服务器后运行，然后删除这些临时文件，而新版本的替代方案是通过OpenSSH发送执行命令，将所有操作附带在SSH连接过程同步实现。该方式只在Ansible 1.5+版本有效，且需在/etc/ansible/ansible.cfg的[ssh_connection]区域开启pipelining=True功能。
 
 
-
-
 ---
-
 <span id="ansible-playbook"></span>
 ## Ansible Playbook
 
@@ -456,9 +448,8 @@ palybook 文件示例
   `ansible-galaxy init username.rolename`
 
 
-### 示例
-
-**Ansible playbook 目录结构示例**
+## 示例
+###### Ansible playbook 目录结构示例
 ````shell
 production                # inventory file for production servers 关于生产环境服务器的清单文件
 stage                     # inventory file for stage environment 关于 stage 环境的清单文件
@@ -500,7 +491,7 @@ roles/
     fooapp/               # ""
 ````
 
-**role目录示例**
+###### role目录示例
 ```
 wamngwg2.roleA    # 角色
   defaults        # 当前角色默认变量
@@ -522,7 +513,7 @@ wamngwg2.roleA    # 角色
   README.md       #
 ```
 
-#### roles 文件示例    
+###### roles 文件示例    
 * `meta/main.yml`  
   `meta/main.yml` 用来配置模块一些元信息，比如支持的平台，Ansible最小依赖版本，这个模块的标签，依赖，作者的信息等等。  
   ````yaml
@@ -602,13 +593,11 @@ rolename/
 
 
 <span id="role-example"></span>
-## roles示例
-
+## roles 示例
 建立目录结构：  
  `mkdir -pv roles/{roleA,roleB}/{tasks,handlers,files,vars,templates,meta,default}`  
  或  
 `ansible-galaxy init username.rolename`
-
 
 **hosts**  
 ```yaml
@@ -675,7 +664,7 @@ roles/http/tasks/main.yml
 ````
 
 <span id="ansible-cfg"></span>
-## `ansible.cfg` 示例
+## ansible.cfg 示例
 
 ```bash
 # config file for ansible -- http://ansible.com/
