@@ -14,11 +14,9 @@ class MyApp {
 }
 
 class Product {
-
 }
 
 class House {
-
 }
 
 Product <|-- House

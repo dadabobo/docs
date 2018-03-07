@@ -1,6 +1,6 @@
-## mermaid
+# mermaid
 
-### 示例
+## 示例
 流程图(flowchart)  
 ```mermaid
 graph LR;
@@ -62,7 +62,8 @@ graph LR
   style id2 fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray:5,5;
 ```
 
-### 导入外部文件 (`@import *.mermaid`)
+## 导入外部文件 
+`@import *.mermaid`
 ```
 @import "mermaid-flow.mermaid"
 @import "mermaid-flow.mermaid" {code_block=true class="line-numbers"}

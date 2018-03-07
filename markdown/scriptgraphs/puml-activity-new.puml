@@ -1,17 +1,7 @@
 @startuml
-skinparam activity {
-  ArrowColor black
-  BackgroundColor WhiteSmoke
-  BorderColor Gray
-  StartColor DimGray
-  EndColor DimGray
-  BarColor Yellow
-  DiamondBorderColor Gray
-  DiamondBackgroundColor WhiteSmoke
-}
-skinparam handwritten true
 
 start
+
 :ClickServlet.handleRequest();
 :new page;
 if (Page.onSecurityCheck) then (true)

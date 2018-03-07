@@ -11,7 +11,7 @@ skinparam sequence {
 }
 
 actor User #Orange
-participant "First Class" as A  
+participant "First Class" as A
 participant "Second Class" as B #Yellow
 participant "Last Class" as C
 
