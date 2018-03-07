@@ -27,17 +27,14 @@ class MyApp {
 }
 
 class Product #Moccasin {
-
 }
 
 class House {
-
 }
 
 Product <|-- House
 Product <|-- Park
 Product <|-- Area
-
 
 List <|-- AbstractList
 Collection <|-- AbstractCollection
