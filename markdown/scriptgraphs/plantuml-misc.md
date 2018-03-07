@@ -1,10 +1,6 @@
-## Misc (PlantUML)
+## Misc
 
 #### Archimate Diagram
-
-@import "plantuml.puml"
-
-
 ```plantuml {code_block: true}
 @startuml
 archimate #Technology "VPN Server" as vpnServerA <<technology-device>>

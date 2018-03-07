@@ -1,4 +1,4 @@
-## 3. 类图 (PlantUML)
+## 3. 类图
 #### 3.1 类之间关系
 * `<|--` 继承 ；`*--` 合成； * `o--` 聚合
 * `--` 线；`..`点线；
@@ -464,7 +464,7 @@ class2 *-- "foo/dummy" : use
 @enduml
 ```
 
-#### 3.12 隐藏字段、、方法、属性、函数、等等
+#### 3.12 隐藏字段、方法、属性、函数等
 You can parameterize the display of classes using the `hide`/`show` command. The basic command is: `hide empty members`. This command will hide attributes or methods if they are empty.
 Instead of `empty members`, you can use:
 * `empty fields` or `empty attributes` for empty fields,

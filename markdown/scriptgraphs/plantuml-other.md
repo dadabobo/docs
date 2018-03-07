@@ -1,4 +1,4 @@
-## 6. 组件图 (PlantUML)
+## 6. 组件图
 
 #### 6.1 组件
 组件必须用中括号括起来。
@@ -738,7 +738,7 @@ NotShooting --> [*]
 
 <!-- pagebreak -->
 
-## 8 对象图 (PlantUML)
+## 8 对象图
 #### 8.1 对象的定义
 使用关键字 object 定义实例。
 ```plantuml {code_block: true}
@@ -841,7 +841,7 @@ object user {
 
 
 <!-- pagebreak -->
-## 9 通用命令 (PlantUML)
+## 9 通用命令
 #### 9.1 注释
 所有以单引号开头的行 ' 都是注释 你也可以使用多行注释，多行注释以 /' 开头 '/ 结尾。
 
@@ -901,7 +901,7 @@ Bob->Alice : hello
 @enduml
 ```
 
-#### 9.4 标题（Title）
+#### 9.4 标题
 * `title` 关键字用于设置一个标题. 在标题描述中使用 `\n` 表示换行。
 * Some skinparam settings are available to put borders on the title.
 
@@ -971,7 +971,7 @@ Alice -> Bob: Hello
 @enduml
 ```
 
-#### 9.6 给图表 (diagram) 添加备注
+#### 9.6 给图表添加备注
 关键字 `legend` 和 `end legend` 用于添加备注。
 可选项 `left`，`right` 和 `center` 可用于设置标注的对齐方式。
 ```plantuml {code_block: true}
@@ -993,17 +993,17 @@ endlegend
 ```
 
 <!-- pagebreak -->
-## 10 Salt (PlantUML)
+## 10 Salt
 Salt 是 PlantUML 下面的子项目用来帮助用户来设计图形接口.
 可以用 `@startsalt` 关键字，或者使用 `@startuml` 紧接着下一行使用 `salt` 关键字.
 
 
-## 11 Creole (PlantUML)
+## 11 Creole
 * A light Creole engine have been integrated into PlantUML to have a standardized way of defining text style.
 * All diagrams are now supporting this syntax.
 * Note that ascending compatibility with HTML syntax is preserved.
 
-## 12 修改字体和颜色 (PlantUML)
+## 12 修改字体和颜色
 #### 12.1 使用方法
 * 使用 `skinparam` 命令修改字体和颜色。例如：
   `skinparam backgroundColor yellow`
@@ -1094,7 +1094,7 @@ deactivate A
 ```
 
 <!-- pagebreak -->
-## 13 预处理 (PlantUML)
+## 13 预处理
 * PlantUML 包含少量的预处理功能，该功能对所有类型的图示都可用。
 * 预处理功能跟 C 语言的预处理非常类似，只是把 `#` 换成`!` 即可。
 
@@ -1244,7 +1244,7 @@ AUTHEN(Bob,Alice)
 @enduml
 ```
 
-#### 13.8 Default values for macro parameters
+#### 13.8 宏参数默认值
 It is possible to assign default values to macro parameters.
 ```plantuml {code_block: true}
 @startuml
@@ -1404,7 +1404,7 @@ module(bar, barcode)
 
 
 <!-- pagebreak -->
-## 14 国际化 (PlantUML)
+## 14 国际化
 PlantUML 语言使用字符定义角色、使用案例等待，但是字符并不仅限于 `A-Z` 的拉丁字符，它可以是来自任何语言的字符。
 ```plantuml {code_block: true}
 @startuml
@@ -1460,5 +1460,5 @@ deactivate A
 ```
 下面是可用的字符集 (这依赖于你的 Java 安装情况): `ISO-8859-1`, `UTF-8`, `UTF-16BE`, `UTF-16LE`, `UTF-16`.
 
-## 15 可用的色彩名称 (PlantUML)
+## 15 可用的色彩名称
 以下是 PlantUML 中可用的色彩名称. 这些名称是大小不敏感的。

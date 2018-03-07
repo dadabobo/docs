@@ -4,7 +4,6 @@ html:
   embed_svg: true
   offline: true
   toc: CoreOS Practice Guide
-
 print_background: false
 ---
 

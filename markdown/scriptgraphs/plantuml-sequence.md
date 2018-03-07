@@ -1,6 +1,6 @@
-## 1. 时序图 (PlantUMLM)
+## 1. 时序图
 
-#### 1.1 简单示例（Basic examples）
+#### 1.1 简单示例
 * 你可以用 `->` 来绘制参与者之间传递的消息，而不必显式地声明参与者。
 * 你也可以使用”`-->`” 绘制一个虚线箭头表示异步消息。
 * 另外，你还能用”`<-`” 和”`<--`”，这不影响绘图，但可以提高可读性。注意：仅适用于时序图，对于其它示意图，规则是不同的。
@@ -25,7 +25,7 @@ Alice <-- Bob: another authentication Response
 @enduml
 ```
 
-#### 1.2 声明参与者（Declaring participant）
+#### 1.2 声明参与者
 * 关键字 `participant` 用于改变参与者的先后顺序。
 * 你也可以使用其它关键字来声明参与者：
   `actor`; `boundary`; `control`; `entity`; `database`
@@ -94,7 +94,7 @@ Bob->L: Log transaction
 ```
 
 <!-- pagebreak -->
-#### 1.3 在参与者中使用非字母符号（Use non-letters in participants）
+#### 1.3 在参与者中使用非字母符号
 你可以使用引号定义参与者，还可以用关键字 `as` 给参与者定义别名。
 ```plantuml {code_block: true}
 @startuml
@@ -116,7 +116,7 @@ Long --> "Bob()" : ok
 @enduml
 ```
 
-#### 1.4 给自己发消息（Message to self）
+#### 1.4 给自己发消息
 参与者可以给自己发信息， 消息文字可以用 `\n` 来换行。
 ```plantuml {code_block: true}
 @startuml
@@ -131,7 +131,7 @@ Alice->Alice: This is a signal to self.\nIt also demonstrates\nmultiline \ntext
 ```
 
 <!-- pagebreak -->
-#### 1.5 修改箭头样式（Change arrow style）
+#### 1.5 修改箭头样式
 修改箭头样式的方式有以下几种:
 * 表示一条丢失的消息：末尾加 `x`
 * 让箭头只有上半部分或者下半部分：将 `<` 和 `>` 替换成 `\` 或者 `/`
@@ -174,7 +174,7 @@ Bob <->o Alice
 @enduml
 ```
 
-#### 1.6 修改箭头颜色（Change arrow color）
+#### 1.6 修改箭头颜色
 你可以用以下记号修改箭头的颜色：
 ```plantuml {code_block: true}
 @startuml
@@ -190,7 +190,7 @@ Alice -[#0000FF]->Bob : ok
 @enduml
 ```
 
-#### 1.7 对消息序列编号（Message sequence numbering）
+#### 1.7 对消息序列编号
 关键字 `autonumber` 用于自动对消息编号。
 ```plantuml {code_block: true}
 @startuml
@@ -323,7 +323,7 @@ Bob <- Alice : Yet another authentication Response
 ```
 
 <!-- pagebreak -->
-#### 1.8 分割示意图 (Splitting diagrams)
+#### 1.8 分割示意图
 关键字 `newpage` 用于把一张图分割成多张。
 在 `newpage` 之后添加文字，作为新的示意图的标题。
 这样就能很方便地在 Word 中将长图分几页打印。

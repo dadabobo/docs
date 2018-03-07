@@ -2,7 +2,6 @@
 * [Markdown 语法说明](http://wowubuntu.com/markdown/)
 * [Markdown语法说明（详解版）](http://www.ituring.com.cn/article/504)
 
-
 #### 标题
 分为六级
 ````

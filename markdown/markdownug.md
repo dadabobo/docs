@@ -4,7 +4,6 @@ html:
   embed_svg: true
   offline: true
   toc: Markdown User Guide
-
 print_background: false
 ---
 

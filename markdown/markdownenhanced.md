@@ -1,3 +1,11 @@
+---
+html:
+  embed_local_images: true
+  embed_svg: true
+  offline: true
+  toc: Markdown Preview Enhanced
+print_background: false
+---
 ## Markdown Preview Enhanced
 
 #### Online
@@ -19,7 +27,6 @@ html:
   embed_svg: true
   offline: true
   toc: Markdown User Guide
-
 print_background: false
 ---
 ```
