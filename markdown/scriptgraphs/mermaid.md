@@ -1,6 +1,6 @@
 # mermaid
 
-## 示例
+#### 示例
 流程图(flowchart)  
 ```mermaid
 graph LR;
@@ -18,6 +18,7 @@ graph LR;
   C-->D;
 ```
 
+---
 时序图 (Sequence Diagram)
 ```mermaid
 sequenceDiagram
@@ -29,6 +30,7 @@ sequenceDiagram
   John--xAlice: Ok!
 ```
 
+---
 GANNT Diagram
 ```mermaid
 gantt
@@ -48,6 +50,7 @@ gantt
   Add to ,mermaid　　　　　　　　　　　:1d
 ```
 
+---
 箭头形连接
 ```mermaid
 graph LR
@@ -62,24 +65,29 @@ graph LR
   style id2 fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray:5,5;
 ```
 
+---
 ## 导入外部文件 
-`@import *.mermaid`
 ```
 @import "mermaid-flow.mermaid"
 @import "mermaid-flow.mermaid" {code_block=true class="line-numbers"}
 ```
 
-#### 流程图 (`mermaid-flow.mermaid`)
+---
+#### 流程图
 @import "mermaid-flow.mermaid"
 @import "mermaid-flow.mermaid" {code_block=true class="line-numbers"}
 
-#### 时序图 (`mermaid-sequence.mermaid`)
+---
+#### 时序图
 @import "mermaid-sequence.mermaid"
 @import "mermaid-sequence.mermaid" {code_block=true class="line-numbers"}
 
-#### 甘特图 (`mermaid-gantt.mermaid`)
+---
+#### 甘特图
 @import "mermaid-gantt.mermaid"
 @import "mermaid-gantt.mermaid" {code_block=true class="line-numbers"}
 
+---
 #### 项目计划
 @import "mermaid-gantt-E01.mermaid"
+@import "mermaid-gantt-E01.mermaid" {code_block=true class="line-numbers"}

@@ -1,7 +1,7 @@
 ## PlantUML Diagrams
 
 ---
-#### `scriptgraphs/pu-version.puml`
+#### scriptgraphs/pu-version.puml
 @import "scriptgraphs/pu-version.puml"
 @import "scriptgraphs/pu-version.puml" {code_block=true class="line-numbers"}
 
@@ -54,21 +54,21 @@ MySql --> (Use)
 ```
 
 ---
-#### `scriptgraphs/pu-class.puml`
+#### scriptgraphs/pu-class.puml
 @import "scriptgraphs/pu-class.puml"
 @import "scriptgraphs/pu-class.puml" {code_block=true class="line-numbers"}
 
 ---
-#### `scriptgraphs/pu-sequence.puml`
+#### scriptgraphs/pu-sequence.puml
 @import "scriptgraphs/pu-sequence.puml"
 @import "scriptgraphs/pu-sequence.puml" {code_block=true class="line-numbers"}
 
 ---
-#### `scriptgraphs/pu-activity.puml`
+#### scriptgraphs/pu-activity.puml
 @import "scriptgraphs/pu-activity.puml"
 @import "scriptgraphs/pu-activity.puml" {code_block=true class="line-numbers"}
 
 ---
-#### `scriptgraphs/pu-usecase.puml`
+#### scriptgraphs/pu-usecase.puml
 @import "scriptgraphs/pu-usecase.puml"
 @import "scriptgraphs/pu-usecase.puml" {code_block=true class="line-numbers"}
