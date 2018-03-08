@@ -93,19 +93,185 @@ kubectl describe secret mysecretname
 Service Account Controller管理Namespace中的ServiceAccount，确保每一个“default”的ServiceAccount存在于每一个活动空间中。
 
 
-#### Kubenetes 认证
+---
+## Kubenetes 证书认证
+
+#### 证书认证图解
+@import "img/k8s/k8s-https-ca.png"
+
+#### API Server 的 TLS 证书
+API Server 启用 HTTPS 需要 TLS 证书。
+如果启用了 HTTPS 服务，又没有指定 `-–tls-cert-file` 和 `-–tls-private-key-file` 参数，就会在 `/var/run/kubernetes` 生成一个自签名证书以及 `Key`
+
+API Server 的 TLS  证书、私钥与签发证书的CA： `kubernetes.pem`,`kubernetes-key.pem`,`kubernetes-ca.pem`
+```yaml
+## kube-apiserver 参数
+--tls-cert-file         = /etc/kubernetes/ssl/kubernetes.pem      # apiserver 证书
+--tls-private-key-file  = /etc/kubernetes/ssl/kubernetes-key.pem  # apiserver 私钥
+
+## kube-apiserver 应用客户端（kubectl/kube-scheduler/kube-proxy）的参数 或 kubeconfig 配置文件参数
+--certificate-authority = /etc/kubernetes/ssl/kubernetes-ca.pem   # 签发 apiserver 证书 的 CA
+```
+
+#### API Server 客户证书认证
+API Server 客户证书签发CA： `client-ca.pem`。所有客户端证书都应该由这一 CA 签发。
+
+> API Server 证书签发 CA 与 客户证书签发 CA 可以一致或不一致。
+> `kubernetes-ca.pem` 与 `client-ca.pem` 可以一致（`ca.pem`）
+
+客户端证书与私钥
+* kubectl:   `admin.pem`,`admin-key.pem`
+* kube-scheduler : `scheduler.pem`,`scheduler-key.pem`
+* kube-proxy: `kube-proxy.pem`,`kube-proxy-key.pem`
+
+Kubernetes API Server 客户证书认证配置
+```yaml
+## kube-apiserver 参数
+--client-ca-file        = /etc/kubernetes/ssl/client-ca.pem       # 签发 客户端证书 的 CA
+
+## kube-apiserver 应用客户端（kubectl）的参数 或 kubeconfig 配置文件参数
+--client-certificate    = /etc/kubernetes/ssl/admin.pem           # 客户端（kubectl）证书
+--client-key            = /etc/kubernetes/ssl/admin-key.pem       # 客户端（kubectl）私钥
+
+## kube-apiserver 应用客户端（kube-scheduler）的参数 或 kubeconfig 配置文件参数
+--client-certificate    = /etc/kubernetes/ssl/scheduler.pem       # 客户端（kube-scheduler）证书
+--client-key            = /etc/kubernetes/ssl/scheduler-key.pem   # 客户端（kube-scheduler）私钥
+
+## kube-apiserver 应用客户端（kube-proxy）的参数 或 kubeconfig 配置文件参数
+--client-certificate    = /etc/kubernetes/ssl/kube-proxy.pem      # 客户端（kube-proxy）证书
+--client-key            = /etc/kubernetes/ssl/kube-proxy-key.pem  # 客户端（kube-proxy）私钥
+```
+
+```plantuml
+@startuml
+interface "HTTPS" as https
+
+rectangle "kube-apiserver"  as apiserver {
+  rectangle "--bind-address\n--secure-port\n--tls-cert-file\n--tls-private-key-file\n--client-ca-file\n--token-auth-file" as apis #Azure
+}
+
+rectangle "kube-apiserver client"  as apiclient {
+  rectangle "--certificate-authority\n--client-certificate\n--client-key" as apic #Azure
+
+  rectangle "kubectl" as kc
+  rectangle "kube-scheduler" as ks
+  rectangle "kube-controller-manager" as cm
+  rectangle "kube-proxy" as kp
+
+  apic -- ks #Moccasin
+  apic -- kc #Moccasin
+  apic -- cm #Moccasin
+  apic -- kp #Moccasin
+}
+
+apiserver -left-> https 
+https -- apiclient 
+@enduml
+```
+
+
+#### 请求 Header 的证书认证（或者：认证代理）
+API server 参数
+* `–requestheader-allowed-names stringSlice`
+* `–requestheader-username-headers` 中指定的 Header 中包含用户名，这一参数的列表确定了允许有效的 `Common Name`，如果这一参数的列表为空，则所有通过 `–requestheader-client-ca-file` 校验的都允许通过。
+* `–requestheader-client-ca-file string`
+  针对收到的请求，在信任 `-–requestheader-username-headers` 中指定的 Header 里面包含的用户名之前，首先会用这一 CA 对客户证书进行验证。
+
+另外一个设置 Kubernetes 认证的方式就是认证代理。如果你对如何向 API Server 发送用户名和组有很多想法，可以设置一个代理，这一代理会使用 HTTP Header 将用户名和组发送给 API Server。
+
+文档中简单的解释了一下工作方式。代理使用一个客户端证书表明身份，`–requestheader-client-ca-file` 告知 API Server，该证书所属的 CA。
+
+API Server 有太多认证方式了（客户端认证、认证代理、Token 等等），让人很迷惑。建议用户尽量少的同时使用认证方式，便于管理、使用和除错。
+
+#### service account 私钥（不是 CA 签发的）
+API Server 参数
+* `–service-account-key-file`
+  PEM 编码的 X509 RSA 或者 ECDSA 的私钥或者公钥，用于检验 ServiceAccount 的 token。如果没指定的话，会使用 `–tls-private-key-file` 替代。文件中可以包含多个 Key，这一参数可以重复指定多个文件。
+
+Controller Manager 参数
+* `–service-account-private-key-file`
+  PEM 编码的 X509 RSA 或者 ECDSA Key，用于签署 Service Account Token。
+
+Controller Manager 使用私钥签署 Service Account Token。跟 Kubernetes 中使用的其他私钥不同的是，这个私钥是不支持同一 CA 验证的，因此上，需要给每个 Controller Manager 指定一致的私钥文件。
+
+这个 Key 也不需要什么 CA 来做签署，生成很容易：
+`openssl genrsa -out private.key 4096`
+
+然后分发给每个 Controller Manager 和 API Server 就可以了。
+
+使用和 `–tls-private-key-file` 一致的文件是可以工作的——只要你给每个 API Server 用的都是同一个 TLS Key（一般都这么做的吧？）。（这里我假设你运行的一个有高可用支持的，多个 API Server 和多个 Controller Manager同时运行的集群）
+
+如果两个不同的 Controller Manager 用了两个不同的 Key，那就杯具了，他们会用各自的 Key 来生成 Token，最终导致无效判定。我觉得这点不太合理，Kubernetes 应该和其他方面一样，使用 CA 进行管理。通过对源码的阅读，我觉得原因可能是 `jwt-go` 不支持 CA。
+
+
+#### Kubelet 证书认证
+```plantuml
+@startuml
+interface "HTTPS" as https
+
+rectangle "kubelet"  as kubelet {
+  rectangle "--tls-cert-file\n--tls-private-key-file\n--client-ca-file" #Azure
+}
+
+rectangle "kube-apiserver"  as api {
+  rectangle "--kubelet-certificate-authority\n-–kubelet-client-certificate\n-–kubelet-client-key" #Azure
+}
+
+api -- https 
+https <- kubelet
+@enduml
+```
+
+API Server 参数
+* `–kubelet-certificate-authority`
+  签发 kubelet 服务端证书 的 CA。
+* `–kubelet-client-certificate`
+  kebelet 客户端证书
+* `–kubelet-client-key`
+  kebelet 客户端证书私钥
+
+Kubelet 参数
+* `–client-ca-file` 
+  签发 kubelet 客户端证书的 CA
+  请求中的客户端证书如果是由文件中的 CA 签署的，那么他的 `Common Name` 就会被用作 `ID` 进行认证。
+* `–tls-cert-file`
+  用来提供 HTTPS 服务的 x509 证书（其中也可包含中间人证书）。如果不提供 `–tls-cert-file` 和 `–tls-private-key-file`，就会为主机地址生成一个自签名的证书和对应的 Key，并保存到 `–cert-dir` 目录里。
+* `–tls-private-key-file`
+  `–tls-cert-file` 对应的 Key
+  校验 kubelet 的请求是有用的，因为 Kubelet 的职责就是在主机上执行代码。
+
+这里实际上有两个 CA，这里不准备深入描述，情况和 API Server 是一样的，Kubelet 用 TLS 来进行认证，也支持客户证书认证。
+另外还要告知 API Server，用什么 CA 检查 Kubelet 的 TLS，另外用什么证书来跟 Kubelet 通信。
+
+> 再说一次，这两个 CA 是可以不同的。
+
+
+---
+## 认证示例
 ###### 证书认证
 ```yaml
 ## kube-apiserver 参数
---client-ca-file        = /etc/kubernetes/ssl/ca.pem              # 根证书（客户端CA证书）
---tls-cert-file         = /etc/kubernetes/ssl/kubernetes.pem      # 服务端私钥
---tls-private-key-file  = /etc/kubernetes/ssl/kubernetes-key.pem  # 服务端证书
+--tls-cert-file         = /etc/kubernetes/ssl/kubernetes.pem      # apiserver 私钥
+--tls-private-key-file  = /etc/kubernetes/ssl/kubernetes-key.pem  # apiserver 证书
+--client-ca-file        = /etc/kubernetes/ssl/admin-ca.pem        # 签发 客户端证书 的 CA
 
 ## kube-apiserver 应用客户端（kubectl）的参数 或 kubeconfig 配置文件参数
---certificate-authority = /etc/kubernetes/ssl/ca.pem              # 根证书
---client-certificate    = /etc/kubernetes/ssl/admin.pem           # 客户端证书
---client-key            = /etc/kubernetes/ssl/admin-key.pem       # 客户端私钥
+--certificate-authority = /etc/kubernetes/ssl/kubernetes-ca.pem   # 签发 apiserver 证书 的 CA
+--client-certificate    = /etc/kubernetes/ssl/admin.pem           # 客户端（kubectl）证书
+--client-key            = /etc/kubernetes/ssl/admin-key.pem       # 客户端（kubectl）私钥
 
+## kube-apiserver 应用客户端（kube-scheduler）的参数 或 kubeconfig 配置文件参数
+--certificate-authority = /etc/kubernetes/ssl/kubernetes-ca.pem   # 签发 apiserver 证书 的 CA
+--client-certificate    = /etc/kubernetes/ssl/scheduler.pem       # 客户端（kube-scheduler）证书
+--client-key            = /etc/kubernetes/ssl/scheduler-key.pem   # 客户端（kube-scheduler）私钥
+
+## kube-apiserver 应用客户端（kube-proxy）的参数 或 kubeconfig 配置文件参数
+--certificate-authority = /etc/kubernetes/ssl/ca.pem              # 签发 apiserver 证书 的 CA
+--client-certificate    = /etc/kubernetes/ssl/kube-proxy.pem      # 客户端（kube-proxy）证书
+--client-key            = /etc/kubernetes/ssl/kube-proxy-key.pem  # 客户端（kube-proxy）私钥
+```
+
+```yaml
 ## kube-apiserver 应用客户端（kube-controller-manager）的参数 或 kubeconfig 配置文件参数
 --root-ca-file                      = /etc/kubernetes/ssl/ca.pem    
                 # 用来对 kube-apiserver 证书进行校验，被用于 Service Account。
@@ -115,16 +281,6 @@ Service Account Controller管理Namespace中的ServiceAccount，确保每一个�
 # 指定的证书和私钥文件用来签名为 TLS BootStrap 创建的证书和私钥；
 --cluster-signing-cert-file         = /etc/kubernetes/ssl/ca.pem
 --cluster-signing-key-file          = /etc/kubernetes/ssl/ca-key.pem
-
-## kube-apiserver 应用客户端（kube-scheduler）的参数 或 kubeconfig 配置文件参数
---certificate-authority = /etc/kubernetes/ssl/ca.pem              # 根证书
---client-certificate    = /etc/kubernetes/ssl/scheduler.pem       # 客户端证书
---client-key            = /etc/kubernetes/ssl/scheduler-key.pem   # 客户端私钥
-
-## kube-apiserver 应用客户端（kube-proxy）的参数 或 kubeconfig 配置文件参数
---certificate-authority = /etc/kubernetes/ssl/ca.pem              # 根证书
---client-certificate    = /etc/kubernetes/ssl/kube-proxy.pem      # 客户端证书
---client-key            = /etc/kubernetes/ssl/kube-proxy-key.pem  # 客户端私钥
 ```
 
 ###### Token 认证方式

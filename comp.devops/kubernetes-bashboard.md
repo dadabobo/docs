@@ -108,10 +108,11 @@ kubectl proxy --address='192.168.99.91' --port=8086 --accept-hosts='^*$'
 
 
 #### 创建示例账户
-[Creating sample user](https://github.com/kubernetes/dashboard/wiki/Creating-sample-user)
-在本指南中，我们将了解如何使用Kubernetes的服务帐户机制创建新用户，授予此用户管理权限并使用与此用户绑定的不记名令牌登录到仪表板。
+参考 [Creating sample user](https://github.com/kubernetes/dashboard/wiki/Creating-sample-user)。
 
-将提供的片段复制到某个xxx.yaml文件并用于kubectl create -f xxx.yaml创建它们。
+使用 Kubernetes 的服务帐户机制创建新用户，授予此用户管理权限并使用与此用户绑定的不记名令牌登录到仪表板。
+
+将提供的片段复制到某个 `xxx.yaml` 文件并用于 `kubectl create -f xxx.yaml` 创建它们。
 
 ```yaml
 # ------------------- Dashboard Service Account ------------------- #
@@ -120,7 +121,7 @@ kubectl proxy --address='192.168.99.91' --port=8086 --accept-hosts='^*$'
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: admin-user
+  name: kubernetes-dashboard
   namespace: kube-system
 
 # ------------------ Dashboard ClusterRoleBinding ----------------- #
@@ -145,35 +146,10 @@ subjects:
 `kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')`
 
 
-###### RBAC
-```yaml
-# ------------------- Dashboard Service Account ------------------- #
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    k8s-app: kubernetes-dashboard
-  name: kubernetes-dashboard
-  namespace: kube-system
+示例文件 `addon/dashboard/kubernetes-rbac.yaml`
+@import "./k8s/kubernetes-rbac.yaml"
 
-# ------------------- Dashboard Service Account ------------------- #
 ---
-
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: kubernetes-dashboard
-roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-  - kind: ServiceAccount
-    name: kubernetes-dashboard
-    namespace: kube-system
-```
-
-
 #### kubernetes-dashboard.yaml
 * `spec.containers.args`
   填写 `- --auto-generate-certificates`，用以自动生成dashboard证书，此处不需要填写apiserver地址。

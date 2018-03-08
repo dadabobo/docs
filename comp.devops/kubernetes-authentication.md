@@ -169,13 +169,13 @@ contexts:
     user: name-of-api-sever
   name: webhook
 ```  
-如上所述，当客户端尝试使用承载令牌对API服务器进行认证时，认证webhook将authentication.k8s.io/v1beta1 TokenReview包含令牌的JSON序列化对象POST 发送到远程服务。Kubernetes不会质疑没有这种标题的请求。
+如上所述，当客户端尝试使用承载令牌对API服务器进行认证时，认证webhook将 `authentication.k8s.io/v1beta1` TokenReview包含令牌的JSON序列化对象POST 发送到远程服务。Kubernetes不会质疑没有这种标题的请求。
 
 #### 验证代理
 可以将API服务器配置为根据请求标头值标识用户，例如 `X-Remote-User`。它旨在与用于设置请求标头值的身份验证代理结合使用。
-* --requestheader-username-headers必需，不区分大小写。标题名称按顺序检查用户标识。包含一个值的第一个标题用作用户名。
-* --requestheader-group-headers1.6+。可选，不区分大小写。建议使用“X-Remote-Group”。标题名称按顺序检查用户的组。所有指定标题中的所有值均用作组名称。
-* --requestheader-extra-headers-prefix1.6+。可选，不区分大小写。建议使用“X-Remote-Extra-”。查找头部前缀以确定有关用户的额外信息（通常由配置的授权插件使用）。任何以任何指定前缀开头的标头都会删除前缀，标头名称的其余部分将成为额外的关键字，而标头值则是额外的值。
+* `--requestheader-username-headers` 必需，不区分大小写。标题名称按顺序检查用户标识。包含一个值的第一个标题用作用户名。
+* `--requestheader-group-headers` 1.6+。可选，不区分大小写。建议使用“`X-Remote-Group`”。标题名称按顺序检查用户的组。所有指定标题中的所有值均用作组名称。
+* `--requestheader-extra-headers-prefix` 1.6+。可选，不区分大小写。建议使用“`X-Remote-Extra-`”。查找头部前缀以确定有关用户的额外信息（通常由配置的授权插件使用）。任何以任何指定前缀开头的标头都会删除前缀，标头名称的其余部分将成为额外的关键字，而标头值则是额外的值。
 
 例如，使用此配置：
 ```yaml

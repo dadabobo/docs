@@ -9,35 +9,21 @@ Kubernetes API服务器验证和配置包含pod，服务，复制控制器等的
 两种 apiserver 访问方式： 
 * 本地端口 (HTTP)
 	HTTP; 没有认证和授权检查，主机访问受保护
-	IP: `--insecure-bind-address`,`--insecure-port`
+	apiserver 参数 - IP: `--insecure-bind-address`,`--insecure-port`
 * 安全端口 (HTTPS)
 	HTTPS; 支持认证授权
-	IP: `--bind-address`, `--secure-port`
-	证书: `--tls-cert-file`,`--tls-private-key-file` 或 `--cert-dir`
+	apiserver 参数 - IP: `--bind-address`, `--secure-port`
+	apiserver 参数 - 证书: `--tls-cert-file`,`--tls-private-key-file` 或 `--cert-dir`
+	apiserver 客户端应用（`kubectl`） 或 kubeconfig 参数： `--certificate-authority` 指定 TLS 证书签发 CA
 
 三种认证方式：
-* 证书认证: `--client-ca-file`
-* token认证: `--token_auth_file`。token文件至少包含三列: `token,username,userid,"group1,group2"`。
-* 基本信息认证： `--basic_auth_file`。文件包至少含三列：`password,username,userid,"group1,group2"`。
-
-#### kubernetes认证设置
-kubernetes中，验证用户是否有权限操作api的方式有三种：证书认证，token认证，基本信息认证。
 * 证书认证
-	设置apiserver的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。在证书认证时，其`CN`域用作用户名，而组织机构域`O`则用作`group`名。
-	客户端应用（如 `kubectl`、`kube-scheduler`等）的参数 或 kubeconfig 配置文件参数：
-	- `certificate-authority` 根证书
-	- `client-certificate` 	 客户端证书
-	- `client-key` 					 客户端私钥
-
+	apiserver 参数： `--client-ca-file` 指定客户端证书签发 CA
+	apiserver 客户端应用 或 kubeconfig 参数： `--client-certificate`,`--client-key`
 * token认证
-	设置apiserver的启动参数：`--token_auth_file=SOMEFILE`，目前使用token还存在争议，而且如果变更了这个文件内容，只有重启apiserver才能使配置生效。
-	token file 的格式至少包含三列： `token,username,userid`, 后面是可选的`group`名。
-	当使用token作为验证方式时，在对apiserver的http请求中，增加一个Header字段：`Authorization`，将它的值设置为：`Bearer SOMETOKEN`。
-	`curl $APISERVER/api --header "Authorization: Bearer $token" --insecure`
+	apiserver 参数： `--token_auth_file`。token文件至少包含三列: `token,username,userid,"group1,group2"`。
 * 基本信息认证
-	设置apiserver的启动参数：`--basic_auth_file=SOMEFILE`，如果更改了文件中的密码，只有重新启动apiserver使其重新生效。其文件的基本格式至少包含三列：`password,username,userid`,后面是可选的`group`名。
-	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODED(USER:PASSWORD)`.
-	`curl $APISERVER/api --header "Authorization: Basic $BASE64ENCODED(USER:PASSWORD)" --insecure`
+	apiserver 参数： `--basic_auth_file`。文件包至少含三列：`password,username,userid,"group1,group2"`。
 
 #### HTTP
 HTTP服务。在HTTP中没有认证和授权检查，主机访问受保护。
@@ -51,9 +37,13 @@ HTTP服务。在HTTP中没有认证和授权检查，主机访问受保护。
   (default `8080`) 
 
 #### HTTPS
-HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-private-key-file`
-认证方式: 令牌文件或者客户端证书;
-使用基于策略的授权方式；
+HTTPS服务。
+* API Server 设置 TLS 证书和秘钥: `–tls-cert-file`，`–tls-private-key-file`
+* 客户端需要指定（`--certificate-authority`）或信任签发 TLS 证书的 CA；
+* 认证方式: 令牌文件或者客户端证书;
+* 使用基于策略的授权方式；
+
+API Server 参数
 * `--bind-address` [`KUBE_API_ADDRESS`]
 	HTTPS 安全接口的监听地址
 	The IP address on which to listen for the `--secure-port` port. The associated interface(s) must be reachable by the rest of the cluster, and by CLI/web clients. If blank, all interfaces will be used (0.0.0.0). 
@@ -72,6 +62,24 @@ HTTPS服务。设置证书和秘钥的标识，`–tls-cert-file`，`–tls-priv
   安全证书文件和私钥文件被设置时，此属性忽略。安全证书文件和私钥文件未设置时，apiserver会自动为该端口绑定的公有IP地址分别生成一个自注册的证书文件和密钥并将它们存储在 `/var/run/kubernetes` 下
   The directory where the TLS certs are located. If `--tls-cert-file` and `--tls-private-key-file` are provided, this flag will be ignored.   
   (default "`/var/run/kubernetes`")
+
+#### kubernetes认证设置
+kubernetes中，验证用户是否有权限操作 API 的方式有三种：证书认证，token认证，基本信息认证。
+* 证书认证
+	设置 apiserver 的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。在证书认证时，其`CN`域用作用户名，而组织机构域`O`则用作`group`名。
+	客户端应用（如 `kubectl`、`kube-scheduler`等）的参数 或 kubeconfig 配置文件参数：
+	- `client-certificate` 	 客户端证书
+	- `client-key` 					 客户端私钥
+	- `certificate-authority` 签发TLS的CA（HTTPS连接需要）
+* token认证
+	设置apiserver的启动参数：`--token_auth_file=SOMEFILE`，目前使用token还存在争议，而且如果变更了这个文件内容，只有重启apiserver才能使配置生效。
+	token file 的格式至少包含三列： `token,username,userid`, 后面是可选的`group`名。
+	当使用token作为验证方式时，在对apiserver的http请求中，增加一个Header字段：`Authorization`，将它的值设置为：`Bearer SOMETOKEN`。
+	`curl $APISERVER/api --header "Authorization: Bearer $token" --insecure`
+* 基本信息认证
+	设置apiserver的启动参数：`--basic_auth_file=SOMEFILE`，如果更改了文件中的密码，只有重新启动apiserver使其重新生效。其文件的基本格式至少包含三列：`password,username,userid`,后面是可选的`group`名。
+	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODED(USER:PASSWORD)`.
+	`curl $APISERVER/api --header "Authorization: Basic $BASE64ENCODED(USER:PASSWORD)" --insecure`
 
 ###### Authentication (认证)
 证书认证、token认证、基本信息认证
