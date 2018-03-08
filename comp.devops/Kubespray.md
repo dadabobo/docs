@@ -112,7 +112,7 @@ IP Address      Role              CPU   Memory
 
 
 ---
-### Installing Kubernetes On-premises/Cloud Providers with Kubespray
+### 安装 k8s 到云或裸设备
 通过 Kubespray 安装 Kubernetes 集群到托管在GCE、Azure、OpenStack、AWS 或 裸设备的主机上。
 
 Kubespray是由Ansible系列 palybook、inventory、配置工具和通用 OS/Kubernetes 集群配置管理任务的领域知识组成。Kubespray提供：

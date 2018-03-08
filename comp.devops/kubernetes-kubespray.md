@@ -1,5 +1,5 @@
-## kubespray: Kubernetes Cluster Installation
-集群安装
+## kubespray
+Kubernetes 集群安装
 
 #### 参考
 * [kubernetes-incubator/kubespray](https://github.com/kubernetes-incubator/kubespray/tree/master/docs) Setup a kubernetes cluster

@@ -1,6 +1,6 @@
 ## Kubernete Concept
-#### Kubernetes核心原理简单总结
-1. **kubernetes APIserver**
+#### 核心原理简单总结
+1. **APIserver**
    API通过 apiserver进程提供服务，该进程在master节点上。该进程包括两个端口：本地端口，默认是8080端口和安全端口，默认6443端口；集群内的功能模块通过API server将信息存入Etcd，其他模块通过API server读取这些信息，从而实现模块间的通信。
    * 提供了集群管理的API接口
    * 是集群内各个功能模块之间数据交互和通信的中心枢纽
@@ -15,7 +15,7 @@
    * erviceAccount Controller和Tocken Controller：与安全相关的控制器；
    * Service Controller：监控Service的变化。
    * Endpoints Controller：通过Store来缓存Service和pod信息，监控Service和Pod的变化。
-3. **Kubernetes Scheduler（调度模块）**
+3. **Scheduler（调度模块）**
    Kubernetes scheduler 负责Pod调度的重要功能模块，负责接收Controller Mannager调度的pod （创建的新Pod）按照特定的调度算法策略绑定的集群中合适的Node上，并将绑定信息写入Etcd中。
    默认的调度流程：
    * 预选调度过程，遍历所有的Node节点，筛选出符合要求的候选节点（内置了多种筛选策略）；
@@ -33,7 +33,7 @@
 
 @import "img/k8s/k8s-abbr.png"
 
-#### How Services in a Cluster Map to Functions in Pods
+#### 集群中服务映射到Pod功能
 @import "img/k8s/k8s-service-function.png"
 
 #### Kubernetes集群
@@ -54,7 +54,7 @@
 @import "img/k8s/k8s-concept.png" {width=600}
 @import "img/k8s/k8s-minikube-part.png" {width=600}
 
-#### Kubernetes中的资源管理与容器设计模式
+#### 资源管理与容器设计模式
 Kubernetes通过声明式配置，真正让开发人员能够理解应用的状态，并通过同一份配置可以立马启动一个一模一样的环境，大大提高了应用开发和部署的效率，其中kubernetes设计的多种资源类型可以帮助我们定义应用的运行状态，并使用资源配置来细粒度得明确限制应用的资源使用。
 
 Kubernetes提供了多种资源对象，用户可以根据自己应用的特性加以选择。这些对象有：

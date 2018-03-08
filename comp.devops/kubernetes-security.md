@@ -33,8 +33,8 @@ Service account 为 Pod 中的进程提供身份信息。
 ```
 
 ---
-#### Service Accounts集群管理指南
-###### User Accounts和Service Accounts
+#### 服务账户集群管理指南
+###### 用户账户和服务账户
 基于以下原因，Kubernetes区分了User Accounts和Service Accounts：
 * User Accounts针对人，Service Accounts针对运行在Pod的进程；
 * User Accounts是全局的，其名字必须在一个集群的所有Namespace中是唯一的。未来的用户资源将不被命令，但是Service Accounts是可以被命名的。
@@ -43,13 +43,13 @@ Service account 为 Pod 中的进程提供身份信息。
 * 复杂系统的配置包含对系统组件的各种Service Accounts的定义。因为Service Accounts
 * 可以创建ad-hoc，可以命名，配置是便携式的。
 
-###### Service Accounts 自动化
+###### 服务账户自动化
 三个独立的组件合作实现对Service Accounts的自动化。
 * Service Accounts Admission Controller
 * Token控制器
 * Service Accounts控制器
 
-###### Service Accounts Admission Controller
+###### 服务账户访问控制器
 Pod的修改是Admission Controller插件实现的，该插件是apiserver的一部分。插件的创建和更新，会同步修改Pod。当插件状态是active（大多版本中，默认是active），创建或者修改Pod会遵循以下流程：
 * 如果该Pod没有`ServiceAccount`集，将`ServiceAccount`设为default
 * `ServiceAccount`必须有存在的Pod引用，否则拒绝该`ServiceAccount`
@@ -86,10 +86,10 @@ kubectl create -f ./secret.json
 kubectl describe secret mysecretname
 ```
 
-###### 删除、废弃一个个Service Accounts Token
+###### 删除 服务账户令牌
 `kubectl delete secret mysecretname`
 
-###### Service Account Controller
+######  服务账户控制器
 Service Account Controller管理Namespace中的ServiceAccount，确保每一个“default”的ServiceAccount存在于每一个活动空间中。
 
 
@@ -170,7 +170,8 @@ https -- apiclient
 ```
 
 
-#### 请求 Header 的证书认证（或者：认证代理）
+#### 请求 Header 的证书认证
+请求 Header 的证书认证 或 认证代理
 API server 参数
 * `–requestheader-allowed-names stringSlice`
 * `–requestheader-username-headers` 中指定的 Header 中包含用户名，这一参数的列表确定了允许有效的 `Common Name`，如果这一参数的列表为空，则所有通过 `–requestheader-client-ca-file` 校验的都允许通过。
@@ -183,7 +184,8 @@ API server 参数
 
 API Server 有太多认证方式了（客户端认证、认证代理、Token 等等），让人很迷惑。建议用户尽量少的同时使用认证方式，便于管理、使用和除错。
 
-#### service account 私钥（不是 CA 签发的）
+#### Service Account 私钥
+Service Account 私钥不是 CA 签发的
 API Server 参数
 * `–service-account-key-file`
   PEM 编码的 X509 RSA 或者 ECDSA 的私钥或者公钥，用于检验 ServiceAccount 的 token。如果没指定的话，会使用 `–tls-private-key-file` 替代。文件中可以包含多个 Key，这一参数可以重复指定多个文件。

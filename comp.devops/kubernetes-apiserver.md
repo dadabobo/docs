@@ -63,7 +63,7 @@ API Server 参数
   The directory where the TLS certs are located. If `--tls-cert-file` and `--tls-private-key-file` are provided, this flag will be ignored.   
   (default "`/var/run/kubernetes`")
 
-#### kubernetes认证设置
+#### 认证设置
 kubernetes中，验证用户是否有权限操作 API 的方式有三种：证书认证，token认证，基本信息认证。
 * 证书认证
 	设置 apiserver 的启动参数：`--client-ca-file=SOMEFILE`，这个被引用的文件中包含的验证client的证书，如果被验证通过，那么这个验证记录中的主体对象将会作为请求的`username`。在证书认证时，其`CN`域用作用户名，而组织机构域`O`则用作`group`名。
@@ -81,7 +81,7 @@ kubernetes中，验证用户是否有权限操作 API 的方式有三种：证�
 	当使用此作为认证方式时，在对apiserver的http请求中，增加一个Header字段：Authorization ，将它的值设置为： `Basic BASE64ENCODED(USER:PASSWORD)`.
 	`curl $APISERVER/api --header "Authorization: Basic $BASE64ENCODED(USER:PASSWORD)" --insecure`
 
-###### Authentication (认证)
+###### 认证
 证书认证、token认证、基本信息认证
 * `--client-ca-file`
 	client证书文件,如果指定，则该客户端证书将被用于认证过程。
@@ -96,7 +96,7 @@ kubernetes中，验证用户是否有权限操作 API 的方式有三种：证�
 	如果设置，文件将被用于通过http基本身份验证的方式访问API服务器的安全端口。
 	If set, the file that will be used to admit requests to the secure port of the API server via http basic authentication.
 
-###### Authorization (授权)
+###### 授权
 * `--authorization-mode`
   授权模式
 	Ordered list of plug-ins to do authorization on secure port. Comma-delimited list of: AlwaysAllow,AlwaysDeny,ABAC,Webhook,RBAC,Node. 
@@ -105,7 +105,7 @@ kubernetes中，验证用户是否有权限操作 API 的方式有三种：证�
 	授权文件
 	File with authorization policy in `csv` format, used with `--authorization-mode=ABAC`, on the secure port.
 
-###### Admission Control (准入控制)
+###### 准入控制
 * `--admission-control`
   准入控制模块列表
   Admission is divided into two phases. In the first phase, only mutating admission plugins run. In the second phase, only validating admission plugins run. The names in the below list may represent a validating plugin, a mutating plugin, or both. Within each phase, the plugins will run in the order in which they are passed to this flag. 

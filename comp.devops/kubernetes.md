@@ -52,9 +52,9 @@ print_background: false
 
 
 ---
-### kubernetes创建资源对象yaml文件例子
-###### kubernetes创建pod的yaml文件
+## 创建资源对象yaml示例
+#### 创建 pod
 @import "k8s/pod.yaml"
 
-###### kubernetes创建rc的yaml文件
+#### 创建 rc
 @import "k8s/rc.yaml"

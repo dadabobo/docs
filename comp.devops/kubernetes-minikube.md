@@ -1,7 +1,7 @@
 ## Minikube
 Kubernetes本地实验环境
 
-#### Minikube: 本地运行Kubernete
+#### 本地运行Kubernete
 Minikube 可以实现一种轻量级的Kubernetes集群，通过在本地计算机上创建虚拟机并部署只包含单个节点的简单集群。适合使用Kubernetes开发时。
 Minikube支持Kubernetes功能: DNS、NodePorts、ConfigMaps和安全、仪表板、容器运行时、启用CNI（容器网络接口）、入口。
 Minikube CLI提供集群管理的基本操作，包括 `start`、`stop`、`status`、`delete` 和 `minikube ssh docker info`
