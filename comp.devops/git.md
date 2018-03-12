@@ -1,6 +1,6 @@
 ## git
 
-###### git 托管平台介绍
+#### git 托管平台介绍
 * [GitHub](https://github.com/)
 * [Bitbucket](https://bitbucket.org/)
 * [coding](https://coding.net)
@@ -97,7 +97,7 @@ git branch -d hotfix-1.2.1
 
 ###### git-flow
 git-flow主要有5中分支：`master`、`hotfix`、`release`、`develop`、`feature`。  
-!["git-flow"](img/git-flow.png "git-flow")  
+@import "./img/git/git-flow.png"
 * `feature`分支开始于`develop`分支，完成以后合并到`develop`分支。
 * 当完成一定数量`feature`分支以后，从`develop`再开一个`release`分支出来，这些特性将被更行到下一个发布的版本中，之后的`feature`将不会被合并到`release`中。
 * 之后在`release`分支中，只修改bug，然后完成`release`分支。完成release分支会完成以下三个操作：

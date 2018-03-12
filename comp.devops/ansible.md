@@ -314,7 +314,7 @@ Ansible 优点
 <span id="ansible-architechture"></span>
 ## Ansible架构
 #### Ansible Architecture   
-!["ansible-architechture"](img/ansible-architechture.png "ansible-architechture")
+@import "img/ansible/ansible-architechture.png"
 
 Ansible由5个部分组成：
 * Ansible：核心
@@ -360,7 +360,7 @@ Ansible的作用对象，不仅仅是Linux和非Linux操作系统的主机（HOS
 * `ANSIBLE`：该部分图中表示的不明显，组合INVENTORY、API、MODULES、PLUGINS的绿框大家可以理解为是ansible命令工具，其为核心执行工具；
 
 Ansible执行任务，这5部分组件相互调用关系如图所示：
-![ansible-architechture](img/ansible-architechture02.png "ansible-architechture")
+@import "img/ansible/ansible-architechture02.png"
 
 使用者使用`Ansible`或`Ansible-playbook`（会额外读取Playbook文件）时，在服务器终端输入Ansible的Ad-Hoc命令集或Playbook后，Ansible会遵循预先编排的规则将`Playbooks`逐条拆解为`Play`，再将`Play`组织成Ansible可识别的任务（`Task`），随后调用任务涉及的所有模块（`Module`）和插件（`Plugin`），根据`Inventory`中定义的主机列表通过`SSH`（Linux默认）将任务集以临时文件或命令的形式传输到远程客户端执行并返回执行结果，如果是临时文件则执行完毕后自动删除。
 
@@ -415,7 +415,85 @@ palybook 文件示例
       service: name=httpd state=restarted
 ```
 
+当模块有太长参数时，可以
+```yaml
+---
+- hosts: webservers
+  vars:
+    http_port: 80
+    max_clients: 200
+  remote_user: root
+  tasks:
+  - name: ensure apache is at the latest version
+    yum:
+      name: httpd
+      state: latest
+  - name: write the apache config file
+    template:
+      src: /srv/httpd.j2
+      dest: /etc/httpd.conf
+    notify:
+    - restart apache
+  - name: ensure apache is running
+    service:
+      name: httpd
+      state: started
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+```
 
+包含多个play的playbook
+```yaml
+---
+- hosts: webservers
+  remote_user: root
+
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: name=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+
+- hosts: databases
+  remote_user: root
+
+  tasks:
+  - name: ensure postgresql is at the latest version
+    yum: name=postgresql state=latest
+  - name: ensure that postgresql is started
+    service: name=postgresql state=started
+```
+
+
+#### 主机与用户
+你可以为 playbook 中的每一个 play,个别地选择操作的目标机器是哪些,以哪个用户身份去完成要执行的步骤（called tasks）.
+hosts 行的内容是一个或多个组或主机的 patterns,以逗号为分隔符。
+
+```yaml
+---
+- hosts: webservers
+  remote_user: yourname
+  tasks:
+    - service: name=nginx state=started
+      become: yes
+      become_method: sudo
+```
+
+#### Tasks 列表
+
+* 每一个 play 包含了一个 task 列表（任务列表）.一个 task 在其所对应的所有主机上（通过 host pattern 匹配的所有主机）执行完毕之后,下一个 task 才会执行.有一点需要明白的是（很重要）,在一个 play 之中,所有 hosts 会获取相同的任务指令,这是 play 的一个目的所在,也就是将一组选出的 hosts 映射到 task.
+* 在运行 playbook 时（从上到下执行）,如果一个 host 执行 task 失败,这个 host 将会从整个 playbook 的 rotation 中移除. 如果发生执行失败的情况,请修正 playbook 中的错误,然后重新执行即可.
+* 每个 task 的目标在于执行一个 moudle, 通常是带有特定的参数来执行.在参数中可以使用变量（variables）.
+* modules 具有”幂等”性,意思是如果你再一次地执行 moudle（译者注:比如遇到远端系统被意外改动,需要恢复原状）,moudle 只会执行必要的改动,只会改变需要改变的地方.所以重复多次执行 playbook 也很安全.
+* 对于 command module 和 shell module,重复执行 playbook,实际上是重复运行同样的命令.如果执行的命令类似于 ‘chmod’ 或者 ‘setsebool’ 这种命令,这没有任何问题.也可以使用一个叫做 ‘creates’ 的 flag 使得这两个 module 变得具有”幂等”特性 （不是必要的）.
+* 每一个 task 必须有一个名称 name,这样在运行 playbook 时,从其输出的任务执行信息中可以很好的辨别出是属于哪一个 task 的. 如果没有定义 name,‘action’ 的值将会用作输出信息中标记特定的 task.
+* 如果要声明一个 task,以前有一种格式: “action: module options” （可能在一些老的 playbooks 中还能见到）.现在推荐使用更常见的格式:”module: options” ,本文档使用的就是这种格式.
+
+#### Handlers
+在发生改变时执行的操作。
 
 ----
 <span id="ansible-palybook-roles"></span>
